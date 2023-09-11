@@ -1,0 +1,73 @@
+import ProtoTypes from "prop-types";
+import PersonalInfoFrom from "../forms/PersonalInfoFrom";
+import profileImg from "../../assets/images/avatar/profile.png";
+import coverImg from "../../assets/images/others/cover.jpg";
+import { useEffect, useState } from "react";
+
+function PersonalInfo({ name, activeTab }) {
+  const [user, setUser] = useState({});
+  const [updatedUser, setUpdatedUser] = useState({});
+
+  const urlActual = window.location.href; // Obtener la URL actual
+  const partesURL = urlActual.split("/"); // Dividir la URL por '/' para obtener partes individuales
+  const id = partesURL[partesURL.length - 1];
+
+  const findUser = async () => {
+    const res = await fetch(`http://localhost:4000/api/clients/${id}`);
+    const info = await res.json();
+    setUser(info.data.client);
+  };
+
+  useEffect(() => {
+    findUser();
+  }, []);
+
+
+
+
+  return (
+    <div id="tab1" className={`tab-pane ${name === activeTab && "active"}`}>
+      <div className="xl:grid grid-cols-12 gap-12 flex 2xl:flex-row flex-col-reverse">
+        <PersonalInfoFrom user={user} />
+
+        <div className="2xl:col-span-4 xl:col-span-5 2xl:mt-24">
+          <header className="mb-8">
+            <h4 className="font-bold text-lg text-bgray-800 dark:text-white mb-2">
+              {user.name}
+            </h4>
+            <p className="mb-4 text-bgray-500">
+              {/* Informacion de ${user.name} */}
+              <span className="text-bgray-900 dark:text-darkblack-300">
+                300x300.
+              </span>{" "}
+              Gifs work too.
+              <span className="text-bgray-900">Max 5mb.</span>
+            </p>
+            <div className="text-center m-auto w-40 h-40 relative">
+              <img src={profileImg} alt="" />
+            </div>
+          </header>
+          <div>
+            <h4 className="font-bold text-lg text-bgray-800 dark:text-white mb-2">
+              Update Cover
+            </h4>
+            <p className="mb-4 text-bgray-500 dark:text-bgray-50">
+              Cover of at least Size
+              <span className="text-bgray-900">1170x920 </span>
+            </p>
+            <div className="relative w-full">
+              <img src={coverImg} className="w-full" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+PersonalInfo.propTypes = {
+  name: ProtoTypes.string,
+  activeTab: ProtoTypes.string,
+};
+
+export default PersonalInfo;
