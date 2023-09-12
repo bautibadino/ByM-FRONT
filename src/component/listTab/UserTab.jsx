@@ -3,10 +3,11 @@ import CustomerInfo from "./CustomerInfo";
 import { BsArrowDownUp } from "react-icons/bs";
 import { useEffect, useState } from "react";
 
-function UserTab({ pageSize, searchFilter }) {
+function  UserTab({ pageSize, searchFilter, success, handleUsersQuantity, currentPage}) {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [usersToDisplay, setUsersToDisplay] = useState([]);
 
   const url = "http://localhost:4000/api/clients";
 
@@ -18,6 +19,7 @@ function UserTab({ pageSize, searchFilter }) {
       return a.name.localeCompare(b.name);
     });
     setAllUsers(sortedClients);
+    handleUsersQuantity(sortedClients.length);
     setLoading(false);
   };
 
@@ -37,6 +39,37 @@ function UserTab({ pageSize, searchFilter }) {
     }
   }, [searchFilter, allUsers]);
 
+  // recargamos la bd luego de crear un cliente
+  useEffect(() => {
+    if (success) {
+      fetchData(url);
+    }
+  }, [success]);
+
+  // PAGINACION // 
+
+  useEffect(() => {
+    if(currentPage === 1) {
+      setUsersToDisplay(filteredUsers.slice(0, pageSize));
+      return;
+    }else{
+      // Calcula el rango de índices para mostrar los usuarios en función de la página actual
+      const startIndex = (currentPage) * pageSize;
+      const endIndex = startIndex + pageSize;
+  
+      console.log(startIndex, endIndex)
+      setUsersToDisplay(filteredUsers.slice(startIndex, endIndex));
+      console.log(usersToDisplay)
+      // setFilteredUsers(usersToDisplay)
+      // console.log(filteredUsers)
+
+    }
+  }, [currentPage, pageSize, filteredUsers]);
+
+  const handleDeleted = (id) => {
+    const newUsers = allUsers.filter((user) => user._id !== id);
+    setAllUsers(newUsers);
+  }
 
   return (
     <div className="table-content w-full overflow-x-auto">
@@ -81,7 +114,7 @@ function UserTab({ pageSize, searchFilter }) {
             </td>
             <td className="px-6 py-5 xl:px-0"></td>
           </tr>
-            {filteredUsers?.map((user, index) =>
+            {usersToDisplay?.map((user, index) =>
               pageSize ? (
                 index + 1 <= pageSize && (
                   <CustomerInfo
@@ -93,6 +126,7 @@ function UserTab({ pageSize, searchFilter }) {
                     location={user.location}
                     cuit={user.cuit}
                     fetchData={fetchData}
+                    handleDeleted={handleDeleted}
                   />
                 )
               ) : index < 3 && (
@@ -105,6 +139,7 @@ function UserTab({ pageSize, searchFilter }) {
                   location={user.location}
                   cuit={user.cuit}
                   fetchData={fetchData}
+                  handleDeleted={handleDeleted}
                 />
               )
             )}

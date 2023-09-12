@@ -2,12 +2,11 @@ import ProtoTypes from "prop-types";
 import { useState } from "react";
 import { SlOptionsVertical } from "react-icons/sl";
 import OptionsMenu from "./OptionsMenu";
-function CustomerInfo({ id, img, name, email, location, cuit }) {
-
+function CustomerInfo({ id, img, name, email, location, cuit, fetchData, handleDeleted}) {
   const [optionsActive, setOptionsActive] = useState(false);
-
+  const [sucess , setSucess] = useState(false);
   const handleModify = (e) => {
-    console.log("click mod");
+
     console.log(`Modificar ${id}`);  
   };
 
@@ -19,6 +18,9 @@ function CustomerInfo({ id, img, name, email, location, cuit }) {
       .then((response) => response.json())
       .then((data) => {
         console.log("Cliente eliminado con éxito", data);
+        handleDeleted(id);
+        setSucess(true);
+
         })
       .catch((error) => {
         console.error("Error al eliminar el cliente", error);
@@ -31,6 +33,8 @@ function CustomerInfo({ id, img, name, email, location, cuit }) {
   const handleDisable = (e) => {
     setOptionsActive(false);
   };
+
+  
   return (
     <tr className="border-b border-bgray-300 dark:border-darkblack-400">
       <td className="px-6 py-5 xl:px-0">
@@ -77,6 +81,7 @@ function CustomerInfo({ id, img, name, email, location, cuit }) {
             active={optionsActive}
             handleModify={handleModify}
             handleDelete={handleDelete}
+            sucess={sucess}
           />
         </div>
       </td>

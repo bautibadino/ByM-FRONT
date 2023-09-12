@@ -17,13 +17,10 @@ function PersonalInfo({ name, activeTab }) {
     const info = await res.json();
     setUser(info.data.client);
   };
-
+  
   useEffect(() => {
     findUser();
   }, []);
-
-
-
 
   return (
     <div id="tab1" className={`tab-pane ${name === activeTab && "active"}`}>

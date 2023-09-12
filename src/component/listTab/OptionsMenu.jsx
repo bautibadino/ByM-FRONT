@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
+import { Sucess } from "../alerts/Sucess";
 
-const OptionsMenu = ({nombre, active, handlePopup, handleModify, handleDelete, handleDisable }) => {
+const OptionsMenu = ({nombre, sucess, active, handleModify, handleDelete, handleDisable }) => {
   return (
     <div
       className={
@@ -39,6 +40,11 @@ const OptionsMenu = ({nombre, active, handlePopup, handleModify, handleDelete, h
               Eliminar
             </button>
           </div>
+          {sucess && (
+            <Sucess
+              mensaje="Cliente eliminado con éxito"
+            />
+            )}
         </div>
       </div>
     </div>
