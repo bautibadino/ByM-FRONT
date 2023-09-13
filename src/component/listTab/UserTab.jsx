@@ -8,9 +8,9 @@ function  UserTab({ pageSize, searchFilter, success, handleUsersQuantity, curren
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [usersToDisplay, setUsersToDisplay] = useState([]);
-
   const url = "http://localhost:4000/api/clients";
 
+  // FETCH A INFO DE USUARIOS
   const fetchData = async (url) => {
     setLoading(true);
     const res = await fetch(url);
@@ -23,14 +23,15 @@ function  UserTab({ pageSize, searchFilter, success, handleUsersQuantity, curren
     setLoading(false);
   };
 
+
   useEffect(() => {
     fetchData(url);
   }, [url]);
 
   useEffect(() => {
-    // Filter users based on the searchFilter input
+    //FILTRADO DE USUARIOS BARRA DE BUSQUEDA
     if (!searchFilter) {
-      setFilteredUsers(allUsers); // When searchFilter is empty, show all clients
+      setFilteredUsers(allUsers);
     } else {
       const filtered = allUsers.filter((user) =>
         user.name.toLowerCase().includes(searchFilter.toLowerCase())
@@ -39,7 +40,7 @@ function  UserTab({ pageSize, searchFilter, success, handleUsersQuantity, curren
     }
   }, [searchFilter, allUsers]);
 
-  // recargamos la bd luego de crear un cliente
+  //RECARGA BD LUEGO DE CREAR UN USUARIO
   useEffect(() => {
     if (success) {
       fetchData(url);
@@ -47,25 +48,19 @@ function  UserTab({ pageSize, searchFilter, success, handleUsersQuantity, curren
   }, [success]);
 
   // PAGINACION // 
-
   useEffect(() => {
     if(currentPage === 1) {
-      setUsersToDisplay(filteredUsers.slice(0, pageSize));
+      setUsersToDisplay(filteredUsers.slice(0, pageSize)); // INDEX INICIAL, YA QUE SI LA PAGINA ES 1, EL INDEX INICIAL ES 0 Y EL FINAL ES EL PAGE SIZE
       return;
     }else{
-      // Calcula el rango de índices para mostrar los usuarios en función de la página actual
-      const startIndex = (currentPage) * pageSize;
-      const endIndex = startIndex + pageSize;
-  
-      console.log(startIndex, endIndex)
-      setUsersToDisplay(filteredUsers.slice(startIndex, endIndex));
-      console.log(usersToDisplay)
-      // setFilteredUsers(usersToDisplay)
-      // console.log(filteredUsers)
-
+      // RANGO DE USUARIOS A MOSTRAR
+      const startIndex = (currentPage) * pageSize; // INDEX INICIAL
+      const endIndex = startIndex + pageSize; // INDEX FINAL
+      setUsersToDisplay(filteredUsers.slice(startIndex, endIndex)); // SLICE PARA MOSTRAR LOS USUARIOS EN EL RANGO
     }
   }, [currentPage, pageSize, filteredUsers]);
 
+  //BORRAR USUARIO DE LA TABLA SIN RECARGAR BD
   const handleDeleted = (id) => {
     const newUsers = allUsers.filter((user) => user._id !== id);
     setAllUsers(newUsers);

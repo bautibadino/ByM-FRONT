@@ -3,7 +3,7 @@ import { useState } from "react";
 function CalenderSelector() {
   const [active, setActive] = useState(false);
   return (
-    <div className="w-full h-full relative mb-5">
+    <div className="w-1/4 h-full relative mb-5">
       <button
         aria-label="none"
         onClick={() => setActive(!active)}

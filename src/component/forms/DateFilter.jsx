@@ -7,6 +7,7 @@ function DateFilter({ options }) {
   const handleActiveFilter = (e) => {
     setActiveFilter(e.target.innerText);
   };
+  
   return (
     <div className="date-filter relative">
       <button

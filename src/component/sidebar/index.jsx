@@ -53,11 +53,11 @@ function Sidebar({ handleActive }) {
             </h4>
             <ul className="mt-2.5">
             <li className="item py-[11px] text-bgray-900 dark:text-white">
-                <Link to="/transaction">
+                <Link to="/transacciones">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2.5">
                       <span className="item-text text-lg font-medium leading-none">
-                        Productos
+                        Transacciones
                       </span>
                     </div>
                   </div>

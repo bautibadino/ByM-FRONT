@@ -1,6 +1,7 @@
 import React from "react";
 import Layout from "../layout";
-import PersonalInfo from "../settings/PersonalInfo";
+import PersonalInfo from "./PersonalInfo";
+
 
 export const ClientProfile = () => {
   return (

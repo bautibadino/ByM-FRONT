@@ -7,7 +7,6 @@ function CustomerInfo({ id, img, name, email, location, cuit, fetchData, handleD
   const [sucess , setSucess] = useState(false);
   const handleModify = (e) => {
 
-    console.log(`Modificar ${id}`);  
   };
 
   const handleDelete = async (e) => {
@@ -82,6 +81,7 @@ function CustomerInfo({ id, img, name, email, location, cuit, fetchData, handleD
             handleModify={handleModify}
             handleDelete={handleDelete}
             sucess={sucess}
+            userId={id}
           />
         </div>
       </td>

@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import { Sucess } from "../alerts/Sucess";
+
 import { NavLink } from "react-router-dom";
 
-const OptionsMenu = ({
+const OptionsTransactions = ({
   userId,
   nombre,
   sucess,
@@ -52,18 +52,18 @@ const OptionsMenu = ({
               Eliminar
             </button>
           </div>
-          {sucess && <Sucess mensaje="Cliente eliminado con éxito" />}
+          {/* {sucess && <Sucess mensaje="Cliente eliminado con éxito" />} */}
         </div>
       </div>
     </div>
   );
 };
 
-OptionsMenu.propTypes = {
+OptionsTransactions.propTypes = {
   active: PropTypes.bool,
   handlePopup: PropTypes.func,
   handleModify: PropTypes.func,
   handleDelete: PropTypes.func,
 };
 
-export default OptionsMenu;
+export default OptionsTransactions;

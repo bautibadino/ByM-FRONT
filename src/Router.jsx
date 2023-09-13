@@ -18,6 +18,7 @@ import ComingSoon from "./pages/commingSoon";
 import Error from "./pages/error";
 import PersonalInfo from "./component/settings/PersonalInfo";
 import { ClientProfile } from "./component/listTab/clientProfile";
+import Transaction from "./pages/transactions/Transaction";
 
 
 const router = createBrowserRouter([
@@ -33,7 +34,10 @@ const router = createBrowserRouter([
     path: "/clientes/:id",
     element: <ClientProfile/>,
   },
-
+  {
+    path: "/transacciones",
+    element: <Transaction/>,
+  },
 
 
   

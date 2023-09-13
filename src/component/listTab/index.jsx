@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ProtoTypes from "prop-types";
-import Pagination from "../Pagination";
-import Filter from "../forms/Filter";
-import FilterFull from "../forms/FilterFull";
 import Search from "../forms/Search";
 import UserTab from "./UserTab";
-import { set } from "mongoose";
+import ClientPagination from "../../pages/clientes/ClientPagination";
 import { Sucess } from "../alerts/Sucess";
 import { Error } from "../alerts/Error";
-import user from "../../data/user";
+
 
 const ListTab = ({ pageSize }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -130,7 +127,7 @@ const ListTab = ({ pageSize }) => {
           handleUsersQuantity={handleUsersQuantity}
           currentPage={currentPage}
         />
-        <Pagination
+        <ClientPagination
           pagesQuantity={pagesQuantity}
           handleNextPage={handleNextPage}
           handlePrevPage={handlePrevPage}

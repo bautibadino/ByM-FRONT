@@ -35,7 +35,7 @@ function SidebarV2() {
                     </Link>
                   </li>
                   <li className="item px-[43px] py-[11px]">
-                    <Link to="/statistics">
+                    <Link to="/transacciones">
                       <span className="item-ico">
                         <svg
                           width="20"

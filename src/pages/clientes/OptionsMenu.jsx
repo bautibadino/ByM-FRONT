@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import { Sucess } from "../alerts/Sucess";
 import { NavLink } from "react-router-dom";
+import { Sucess } from "../../component/alerts/Sucess";
 
 const OptionsMenu = ({
   userId,

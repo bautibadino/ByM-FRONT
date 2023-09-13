@@ -1,9 +1,11 @@
-import ListTab from "../../component/listTab";
+
 import Layout from "../../component/layout";
 import TeamChat from "../../component/teamChat";
 import Wallet from "../../component/wallet";
+import ListTab from "./ListTab";
 
-function Clientes() {
+const Clientes = ( ) => {
+  
   return (
     <Layout>
       <main className="w-full xl:px-12 px-6 pb-6 xl:pb-12 sm:pt-[156px] pt-[100px]">
