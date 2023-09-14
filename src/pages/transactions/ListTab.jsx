@@ -1,54 +1,95 @@
 import React, { useEffect, useState } from "react";
 import ProtoTypes from "prop-types";
 import TransactionTab from "./TransactionTab";
-
 import MonthSelector from "./MonthSelector";
 import SellerSelector from "./SellerSelector";
 import PaymentSelector from "./PaymentSelector";
+import { GrPowerReset } from "react-icons/gr";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 const ListTab = ({ pageSize }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [bdSeller, setBdSeller] = useState([]); //BD
+  const [formSeller, setFormSeller] = useState({});
+  const [month, setMonth] = useState("");
+  const [seller, setSeller] = useState("");
+  const [payment, setPayment] = useState("");
+  const sellState = [
+    { id: "PAID", name: "PAGO" },
+    { id: "DEBITED", name: "ADEUDADO" },
+  ];
+  const paymentSelector =[
+    { id: "CASH", name: "EFECTIVO" },
+    { id: "CREDIT_CARD", name: "CREDITO" },
+    { id: "DEBIT_CARD", name: "DEBITO" },
+    { id: "BANK_TRANSFER", name: "TRANSFERENCIA" },
+    { id: "CHECK", name: "CHEQUE" },
+  ]
 
-  const handleSeller = (seller) => {
-    setSeller(seller);
+  const getSellers = async () => {
+    fetch("http://localhost:4000/api/users", {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setBdSeller(data.data.users))
+      .catch((error) => console.log(error));
   };
-  const handleMonth = (month) => {
-    setMonth(month);
+  useEffect(() => {
+    getSellers();
+  }, []);
+
+  const handleSetMonth = (selectedMonth) => {
+    setMonth(selectedMonth);
   };
-  const handlePayment = (payment) => {
-    setPayment(payment);
+  const handleSetSeller = (selectedSeller) => {
+    setSeller(selectedSeller);
+  };
+  const handleSetPayment = (selectedPayment) => {
+    setPayment(selectedPayment);
   };
 
   const openModal = () => {
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  // CREAR USUARIO
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  //POST request
+  const handleAddTransaction = async (transaction) => {
+    const response = await fetch("http://localhost:4000/api/transactions", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(transaction),
+    });
+    const data = await response.json();
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     // Obtener los valores del formulario
     const client = e.target.clientName.value;
-    const seller = e.target.seller.value;
-    const payment = e.target.payment.value;
+    const seller = formSeller;
+    const paymentType = e.target.paymentType.value;
     const status = e.target.status.value;
     const description = e.target.description.value;
     const total = e.target.total.value;
-    
 
     // Crear un objeto cliente con los valores
     if (
-      name === "" ||
-      cuit === "" ||
-      email === "" ||
-      location === "" ||
-      direction === ""
+      client === "" ||
+      seller === "" ||
+      paymentType === "" ||
+      status === "" ||
+      description === "" ||
+      total === ""
     ) {
       setError(true);
       setTimeout(() => {
@@ -56,35 +97,66 @@ const ListTab = ({ pageSize }) => {
       }, 2000);
       return;
     }
-    const cliente = {
-      name,
-      cuit,
-      email,
-      location,
-      direction,
-    };
 
-  } 
+    const dailyTransaction = {
+      client,
+      seller,
+      paymentType,
+      status,
+      description,
+      total,
+    };
+    handleAddTransaction(dailyTransaction);
+  };
+
 
   return (
-    <div className="w-full rounded-lg bg-white px-[24px] py-[20px] dark:bg-darkblack-600">
-      <div className="flex flex-col space-y-5">
-        <div className="flex h-[56px] w-full space-x-4">
-          <MonthSelector handleMonth={handleMonth}/> 
-          <SellerSelector handleSeller={handleSeller}/> 
-          <PaymentSelector handlePayment={handlePayment}/> 
+    <div className="w-full rounded-lg bg-white px-[24px] py-[20px] dark:bg-darkblack-600 ">
+      <div className="flex flex-row justify-between mb-6">
+        <h2 className="text-2xl font-semibold text-darkblack dark:text-white ">
+          Filtros
+        </h2>
+        <div className="flex flex-row">
           <button
-            className=" px-2 bg-gradient-to-r from-darkblack-500 to-darkblack-600 text-yellow-300 dark:bg-gradient-to-r dark:from-yellow-200 dark:to-yellow-300 dark:text-black rounded-md "
+            className=" flex justify-center items-center flex-col text-sm bg-gradient-to-r from-green-200 to-green-300 text-black rounded-md hover:from-green-300 hover:to-green-400 p-2 mx-2"
+            onClick={() => {
+              setMonth("");
+              setSeller("");
+              setPayment("");
+            }}
+          >
+            <span className="text-sm">Limpiar filtros</span>
+            {/* <GrPowerReset className="text-black text-xl" /> */}
+          </button>
+          <button
+            className=" flex justify-center items-center flex-col flex-wrap text-sm bg-gradient-to-r from-yellow-200 to-yellow-300 text-black rounded-md hover:from-yellow-300 hover:to-yellow-400 p-2 mx-2 "
             onClick={openModal}
           >
-            Crear transacción
+            <span className="text-sm">Agregar transaccion</span>
+            {/* <IoAddCircleOutline className="text-black text-2xl" /> */}
           </button>
         </div>
+      </div>
+      <div className="flex flex-col space-y-5">
+        <div className="flex h-[56px] w-full space-x-4">
+          <MonthSelector
+            className="w-1/3"
+            onMonthChange={handleSetMonth}
+            month={month}
+          />
+          <SellerSelector
+            className="w-1/3"
+            onSellerChange={handleSetSeller}
+            seller={seller}
+          />
+          <PaymentSelector
+            className="w-1/3"
+            onPaymentChange={handleSetPayment}
+            payment={payment}
+          />
+        </div>
 
-        <TransactionTab
-          pageSize={pageSize}
-          success={success}
-        />
+        <TransactionTab pageSize={pageSize} success={success} bdSeller={bdSeller} />
         {/* <Pagination
           pagesQuantity={pagesQuantity}
           handleNextPage={handleNextPage}
@@ -103,54 +175,81 @@ const ListTab = ({ pageSize }) => {
 
             <form onSubmit={handleSubmit}>
               <div className="flex flex-row">
-                <div className="mx-2 mb-4">
+                <div className="w-1/2 mx-2 mb-4">
                   <label className="block text-sm font-medium text-gray-700">
                     Nombre de cliente
                   </label>
                   <input
                     type="text"
-                    id="Clientname"
-                    name="Clientname"
+                    id="clientName"
+                    name="clientName"
                     className="border rounded-lg px-3 py-2 w-full"
                   />
                 </div>
 
-                <div className="mx-2 mb-4">
+                <div className="w-1/2 mx-2 mb-4">
                   <label className="block text-sm font-medium text-gray-700">
                     Vendedor
                   </label>
-                  <input
-                    type="email"
-                    id="seller"
-                    name="seller"
-                    className="border rounded-lg px-3 py-2 w-full"
-                  />
+                  <select
+                    className="w-full rounded-md bg-white"
+                    id="sellers"
+                    onChange={(e) => setFormSeller(e.target.value)}
+                  >
+                    {bdSeller.map((seller) => (
+                      <option
+                        className="mt-4"
+                        name="seller"
+                        value={seller._id}
+                      >{`${seller.firstName} ${seller.lastName}`}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
               <div className="flex flex-col">
-                <div className="flex flex-row">
-                  <div className="mx-2 mb-4">
+                <div className="flex flex-row w-full">
+                  <div className="mx-2 mb-4 w-1/2">
                     <label className="block text-sm font-medium text-gray-700">
                       Medio de pago
                     </label>
-                    <input
+                    <select
                       type="text"
-                      id="payment"
-                      name="payment"
+                      id="paymentType"
+                      name="paymentType"
                       className="border rounded-lg px-3 py-2 w-full"
-                    />
+                    >
+                      {paymentSelector.map((payment) => (
+                        <option
+                          className="mt-4"
+                          name="paymentType"
+                          value={payment.id}
+                        >
+                          {payment.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  <div className="flex flex-col mx-2 mb-4">
+                  <div className="flex flex-col mx-2 mb-4 w-1/2">
                     <label className="block text-sm font-medium text-gray-700">
                       Estado de venta
                     </label>
-                    <input
+                    <select
                       type="text"
                       id="status"
                       name="status"
                       className="border rounded-lg px-3 py-2 w-full"
-                    />
+                    >
+                      {sellState.map((state) => (
+                        <option
+                          className="mt-4"
+                          name="status"
+                          value={state.id}
+                        >
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <div className="flex flex-col m-2">
@@ -166,19 +265,18 @@ const ListTab = ({ pageSize }) => {
                 </div>
               </div>
               <div className="flex flex-col mb-4">
-
-                  <div className="flex flex-col m-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Total
-                    </label>
-                    <input
-                      type="text"
-                      id="total"
-                      name="total"
-                      className="border rounded-lg px-3 py-2 w-full"
-                    />
-                  </div>
+                <div className="flex flex-col m-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Total
+                  </label>
+                  <input
+                    type="text"
+                    id="total"
+                    name="total"
+                    className="border rounded-lg px-3 py-2 w-full"
+                  />
                 </div>
+              </div>
               {/* Repite esto para los otros campos del formulario */}
               <div className="flex justify-end">
                 <button

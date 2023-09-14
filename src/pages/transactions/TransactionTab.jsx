@@ -1,9 +1,24 @@
 import ProtoTypes from "prop-types";
 import { BsArrowDownUp } from "react-icons/bs";
 import { useEffect, useState } from "react";
-import ClientInfo from "./ClientInfo";
+import TransactionInfo from "./TransactionInfo";
 
-const TransactionTab = () => {
+const TransactionTab = ({bdSeller}) => {
+
+  const [transactions, setTransactions] = useState([]);
+
+  const getTransactions = async () => {
+    const response = await fetch("http://localhost:4000/api/transactions");
+    const data = await response.json();
+    setTransactions(data.data.transaction)
+
+  }
+  const pageSize =20
+  useEffect(() => {
+    getTransactions();
+  }
+  , []);
+
   return (
     <div className="table-content w-full overflow-x-auto">
       <table className="w-full">
@@ -16,7 +31,7 @@ const TransactionTab = () => {
                 </span>
               </div>
             </th>
-            <th className="px-6 py-5 xl:px-0" style={{ whiteSpace: "nowrap" }}>
+            <th className="px-6 py-5 xl:px-0 whitespace-nowrap" >
               <div className="flex w-full items-center space-x-2.5">
                 <span className="text-center font-medium text-bgray-600 dark:text-bgray-50">
                   Medio de pago
@@ -55,8 +70,23 @@ const TransactionTab = () => {
           </tr>
         </thead>
         <tbody>
-          {/* <ClientInfo />  */}
-          {/* <ClientInfo /> */}
+        {transactions?.map((transaction, index) =>
+              pageSize ? (
+                index + 1 <= pageSize && (
+                  <TransactionInfo
+                  key={transaction._id}
+                  transaction={transaction}
+                  bdSeller={bdSeller}
+                  />
+                )
+              ) : index < 3 && (
+                <TransactionInfo
+                  key={transaction._id}
+                  transaction={transaction}
+                  bdSeller={bdSeller}
+                />
+              )
+            )}
         </tbody>
       </table>
     </div>

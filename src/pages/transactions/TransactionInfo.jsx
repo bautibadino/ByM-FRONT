@@ -1,60 +1,53 @@
 import ProtoTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SlOptionsVertical } from "react-icons/sl";
 import OptionsTransactions from "./OptionsTransactions";
 
-const ClientInfo = () => {
-  const [optionsActive, setOptionsActive] = useState(false);
-  const [sucess, setSucess] = useState(false);
-  const handleModify = (e) => {};
+const TransactionInfo = ({transaction, bdSeller}) => {
+  const {client, paymentType, seller, status, description, total} = transaction;
+  const [sellerName, setSellerName] = useState('');
+  console.log(bdSeller);
+  //filtrar nombre de vendedor comparando id del vendedor de transaccion con el bdSeller
 
-  const handleDelete = async (e) => {
-    console.log(id);
-    await fetch(`http://localhost:4000/api/clients/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Cliente eliminado con éxito", data);
-        handleDeleted(id);
-        setSucess(true);
-      })
-      .catch((error) => {
-        console.error("Error al eliminar el cliente", error);
-      });
-    setTimeout(() => {
-      handleDisable();
-    }, 1400);
-  };
-  const handleDisable = (e) => {
-    setOptionsActive(false);
-  };
-
+  const getSellerName = async () => {
+    bdSeller.find((vendedor) => (vendedor._id === seller) ? setSellerName(vendedor.firstName) : null
+    )
+  }
+  useEffect(() => {
+    getSellerName();
+  }, []);
   return (
     <tr className="border-b border-bgray-300 dark:border-darkblack-400">
       <td className="px-6 py-5 xl:px-0">
         <div className="flex w-full items-center space-x-2.5 text-center">
-          <div className="h-10 w-10 overflow-hidden rounded-full">
-          
-          </div>
           <p className="text-base font-semibold text-bgray-900 dark:text-white">
-
+            {client}
           </p>
         </div>
       </td>
       <td className="px-6 py-5 xl:px-0">
         <p className="text-base font-medium text-bgray-900 dark:text-white">
-          {/* {email} */}
+          {paymentType}
         </p>
       </td>
       <td className="px-6 py-5 xl:px-0">
         <p className="text-base font-medium text-bgray-900 dark:text-white">
-          {/* {location} */}
+          {sellerName}
         </p>
       </td>
       <td className="w-[165px] px-6 py-5 xl:px-0">
         <p className="text-base font-semibold text-bgray-900 dark:text-white">
-          {/* {cuit} */}
+          {description}
+        </p>
+      </td>
+      <td className="w-[165px] px-6 py-5 xl:px-0">
+        <p className="text-base font-semibold text-bgray-900 dark:text-white">
+          {total}
+        </p>
+      </td>
+      <td className="w-[165px] px-6 py-5 xl:px-0">
+        <p className="text-base font-semibold text-bgray-900 dark:text-white">
+          {status}
         </p>
       </td>
       <td className="px-6 py-5 xl:px-0">
@@ -65,9 +58,7 @@ const ClientInfo = () => {
             onClick={() => setOptionsActive(true)}
           >
           </button>
-          <OptionsTransactions
-
-          />
+          {/* <OptionsTransactions/> */}
         </div>
             {/* <SlOptionsVertical /> */}
       </td>
@@ -75,7 +66,7 @@ const ClientInfo = () => {
   );
 };
 
-ClientInfo.propTypes = {
+TransactionInfo.propTypes = {
   img: ProtoTypes.string,
   name: ProtoTypes.string,
   email: ProtoTypes.string,
@@ -83,4 +74,4 @@ ClientInfo.propTypes = {
   spent: ProtoTypes.string,
 };
 
-export default ClientInfo;
+export default TransactionInfo;
