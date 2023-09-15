@@ -19,7 +19,7 @@ const PaymentSelector = ({onPaymentChange, payment}) =>{
    
 
   return (
-    <div className="w-1/3 h-full relative mb-5">
+    <div className="selector w-full mt-8 md:w-1/3 relative md:mx-2 md:mb-5 h-[40px]">
       <span className="mb-2 text-darkblack-600 dark:text-white whitespace-nowrap">Filtra por medio de pago</span>
       <button
         aria-label="none"

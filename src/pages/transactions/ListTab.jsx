@@ -6,20 +6,26 @@ import SellerSelector from "./SellerSelector";
 import PaymentSelector from "./PaymentSelector";
 import { GrPowerReset } from "react-icons/gr";
 import { IoAddCircleOutline } from "react-icons/io5";
+import { Sucess } from "../../component/alerts/Sucess";
+import { Error } from "../../component/alerts/Error";
+
 
 const ListTab = ({ pageSize }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [bdSeller, setBdSeller] = useState([]); //BD
-  const [formSeller, setFormSeller] = useState({});
+  const [formSeller, setFormSeller] = useState(null);
   const [month, setMonth] = useState("");
   const [seller, setSeller] = useState("");
   const [payment, setPayment] = useState("");
+  const [transactions, setTransactions] = useState([]);
+
   const sellState = [
     { id: "PAID", name: "PAGO" },
     { id: "DEBITED", name: "ADEUDADO" },
   ];
+
   const paymentSelector =[
     { id: "CASH", name: "EFECTIVO" },
     { id: "CREDIT_CARD", name: "CREDITO" },
@@ -42,13 +48,14 @@ const ListTab = ({ pageSize }) => {
   useEffect(() => {
     getSellers();
   }, []);
-
+  
   const handleSetMonth = (selectedMonth) => {
     setMonth(selectedMonth);
   };
   const handleSetSeller = (selectedSeller) => {
     setSeller(selectedSeller);
   };
+
   const handleSetPayment = (selectedPayment) => {
     setPayment(selectedPayment);
   };
@@ -59,7 +66,6 @@ const ListTab = ({ pageSize }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
   //POST request
   const handleAddTransaction = async (transaction) => {
     const response = await fetch("http://localhost:4000/api/transactions", {
@@ -70,8 +76,49 @@ const ListTab = ({ pageSize }) => {
       body: JSON.stringify(transaction),
     });
     const data = await response.json();
-  };
+    setSuccess(true);
 
+    setTimeout(() => {
+      setSuccess(false);
+      setIsModalOpen(false);
+    }, 2000);
+  };
+  
+  const getTransactions = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/transactions");
+      if (!response.ok) {
+        throw new Error('Error en la respuesta de la API');
+      }
+      
+      const data = await response.json();
+  
+      // Transformar las fechas aquí
+      const transactionsWithFormattedDate = data.data.transaction.map((transaction) => {
+        const date = transaction.createdAt;
+        const newDate = date.split(/[T-]/);
+        const year = newDate[0];
+        const month = newDate[1];
+        const day = newDate[2];
+        const dateFormatted = `${day}/${month}/${year}`;
+        
+        // Devolver el objeto de transacción actualizado
+        return {
+          ...transaction,
+          year: year,
+          month: month,
+          day: day,
+          formattedDate: dateFormatted,
+        };
+      });
+  
+      // Establecer las transacciones en el estado
+      setTransactions(transactionsWithFormattedDate);
+    } catch (error) {
+      console.error('Error al obtener las transacciones:', error);
+    }
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Obtener los valores del formulario
@@ -82,10 +129,9 @@ const ListTab = ({ pageSize }) => {
     const description = e.target.description.value;
     const total = e.target.total.value;
 
-    // Crear un objeto cliente con los valores
     if (
       client === "" ||
-      seller === "" ||
+      seller === null ||
       paymentType === "" ||
       status === "" ||
       description === "" ||
@@ -98,6 +144,13 @@ const ListTab = ({ pageSize }) => {
       return;
     }
 
+    const date = new Date(); // Obtenemos la fecha actual
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const dateFormatted = `${day}/${month}/${year}`;
+  
+    console.log(dateFormatted)
     const dailyTransaction = {
       client,
       seller,
@@ -105,16 +158,17 @@ const ListTab = ({ pageSize }) => {
       status,
       description,
       total,
+      formattedDate: dateFormatted,
     };
     handleAddTransaction(dailyTransaction);
+    setTransactions([...transactions, dailyTransaction]);
   };
-
 
   return (
     <div className="w-full rounded-lg bg-white px-[24px] py-[20px] dark:bg-darkblack-600 ">
-      <div className="flex flex-row justify-between mb-6">
-        <h2 className="text-2xl font-semibold text-darkblack dark:text-white ">
-          Filtros
+      <div className="flex flex-col items-center justify-center  md:justify-between mb-6 md:flex-row ">
+        <h2 className="text-2xl font-semibold text-darkblack dark:text-white my-2 ">
+          Transacciones diarias
         </h2>
         <div className="flex flex-row">
           <button
@@ -138,25 +192,35 @@ const ListTab = ({ pageSize }) => {
         </div>
       </div>
       <div className="flex flex-col space-y-5">
-        <div className="flex h-[56px] w-full space-x-4">
+        <div className="flex flex-col items-center w-full md:flex-row">
           <MonthSelector
-            className="w-1/3"
+            className=""
             onMonthChange={handleSetMonth}
             month={month}
           />
           <SellerSelector
-            className="w-1/3"
+            className=""
             onSellerChange={handleSetSeller}
+            bdSeller={bdSeller}
             seller={seller}
           />
           <PaymentSelector
-            className="w-1/3"
+            className=""
             onPaymentChange={handleSetPayment}
             payment={payment}
           />
         </div>
 
-        <TransactionTab pageSize={pageSize} success={success} bdSeller={bdSeller} />
+        <TransactionTab
+          getTransactions={getTransactions}
+          transactions={transactions}
+          pageSize={pageSize}
+          success={success}
+          bdSeller={bdSeller}
+          month={month}
+          seller={seller}
+          payment={payment}
+        />
         {/* <Pagination
           pagesQuantity={pagesQuantity}
           handleNextPage={handleNextPage}
@@ -193,14 +257,17 @@ const ListTab = ({ pageSize }) => {
                   </label>
                   <select
                     className="w-full rounded-md bg-white"
-                    id="sellers"
+                    id="seller"
+                    name="seller"
                     onChange={(e) => setFormSeller(e.target.value)}
+                    defaultValue=""
                   >
+                    <option disabled value=""></option>
                     {bdSeller.map((seller) => (
                       <option
                         className="mt-4"
-                        name="seller"
                         value={seller._id}
+                        key={seller._id}
                       >{`${seller.firstName} ${seller.lastName}`}</option>
                     ))}
                   </select>
@@ -218,11 +285,14 @@ const ListTab = ({ pageSize }) => {
                       id="paymentType"
                       name="paymentType"
                       className="border rounded-lg px-3 py-2 w-full"
+                      defaultValue={""}
                     >
+                      <option disabled value=""></option>
                       {paymentSelector.map((payment) => (
                         <option
                           className="mt-4"
                           name="paymentType"
+                          key={payment.id}
                           value={payment.id}
                         >
                           {payment.name}
@@ -239,12 +309,15 @@ const ListTab = ({ pageSize }) => {
                       id="status"
                       name="status"
                       className="border rounded-lg px-3 py-2 w-full"
+                      defaultValue={""}
                     >
+                      <option disabled value=""></option>
                       {sellState.map((state) => (
                         <option
                           className="mt-4"
                           name="status"
                           value={state.id}
+                          key={state.id}
                         >
                           {state.name}
                         </option>
@@ -266,15 +339,19 @@ const ListTab = ({ pageSize }) => {
               </div>
               <div className="flex flex-col mb-4">
                 <div className="flex flex-col m-2">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 ml-3">
                     Total
                   </label>
-                  <input
-                    type="text"
-                    id="total"
-                    name="total"
-                    className="border rounded-lg px-3 py-2 w-full"
-                  />
+                  <div className="flex flex-row items-center">
+                    <span className="mr-2">$</span>
+                    <input
+                      type="number"
+                      step=".01"
+                      id="total"
+                      name="total"
+                      className="border rounded-lg px-3 py-2 w-full"
+                    />
+                  </div>
                 </div>
               </div>
               {/* Repite esto para los otros campos del formulario */}
@@ -285,13 +362,16 @@ const ListTab = ({ pageSize }) => {
                 >
                   Cancelar
                 </button>
-                <button className="bg-gradient-to-l from-green-300 to-green-500 text-white rounded-lg px-4 py-2 ml-2 hover:bg-green-600">
+                <button
+                  type="submit"
+                  className="bg-gradient-to-l from-green-300 to-green-500 text-white rounded-lg px-4 py-2 ml-2 hover:bg-green-600"
+                >
                   Guardar
                 </button>
               </div>
 
-              {/* {success && <Sucess mensaje="Cliente creado con éxito" />} */}
-              {/* {error && <Error mensaje="Compruebe los datos ingresados" />} */}
+              {success && <Sucess mensaje="Transaccion creada con éxito" />}
+              {error && <Error mensaje="Compruebe los datos ingresados" />}
             </form>
           </div>
         </div>

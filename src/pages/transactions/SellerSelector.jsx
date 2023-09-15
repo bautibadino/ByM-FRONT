@@ -1,21 +1,17 @@
 import { useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-const SellerSelector = ({onSellerChange, seller}) =>{
+const SellerSelector = ({onSellerChange, seller, bdSeller}) =>{
   const [active, setActive] = useState(false);
 
-  const sellers = [
-    "Ariel Monti",
-    "Cesar Badino",
-    "Damian Massimino",
-    "Bautista Badino",
-  ];
-
+  const sellers = bdSeller.map((seller) => seller.firstName);
+  console.log(seller)
   const newSeller = (seller) => {
     setActive(false);
     onSellerChange(seller);
   }
+
   return (
-    <div className="w-1/3 h-full relative mb-5">
+    <div className="selector w-full  mt-8 md:w-1/3 h-[40px] relative md:mx-2 md:mb-5">
       <span className="mb-2 text-darkblack-600 dark:text-white whitespace-nowrap">Filtra por vendedor</span>
       <button
         aria-label="none"
