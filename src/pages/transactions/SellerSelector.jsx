@@ -4,7 +4,6 @@ const SellerSelector = ({onSellerChange, seller, bdSeller}) =>{
   const [active, setActive] = useState(false);
 
   const sellers = bdSeller.map((seller) => seller.firstName);
-  console.log(seller)
   const newSeller = (seller) => {
     setActive(false);
     onSellerChange(seller);

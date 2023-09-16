@@ -35,12 +35,17 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
     getTransactions();
   }
   , []);
+
   useEffect(() => {
     filterTransactions();
+    // orderTransactions();
   }, [seller, month, payment, transactions]);
+
+  useEffect(() => {
+    orderTransactions();
+  }, []);
   const filterTransactions = () => {
     const filtered = transactions.filter((transaction) => {
-
       const sellerMatch = seller === "" || transaction.seller === bdSeller.find((vendedor) => vendedor.firstName === seller)._id;
       const paymentMatch = payment === "" || transaction.paymentType === paymentType[payment];
       const monthMatch = month === "" || transaction.month === numberMonths[month];
@@ -48,9 +53,17 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
     });
     setFilteredTransactions(filtered);
   };
-  console.log(filteredTransactions)
-
-
+  
+  const orderTransactions = () => {
+    const ordered = [...filteredTransactions]; // Clonar el arreglo para no modificarlo directamente
+    ordered.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateA - dateB;
+    });
+    setFilteredTransactions(ordered);
+  };
+  
   return (
     <div className="table-content w-full overflow-x-auto">
       <table className="w-full">
