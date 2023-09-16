@@ -7,6 +7,7 @@ import TransactionInfo from "./TransactionInfo";
 const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month, payment}) => {
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [monthNumber, setMonthNumber] = useState(0);
+  const [success, setSuccess] = useState(false);
   const pageSize = 100;
   const numberMonths = {
     "Enero": "01",
@@ -63,7 +64,22 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
     });
     setFilteredTransactions(ordered);
   };
-  
+  const handleDeleteTransaction = (transaction) => {
+    return async () => {
+      await fetch(`http://localhost:4000/api/transactions/${transaction}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setFilteredTransactions(filteredTransactions.filter((t) => t._id !== transaction));
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+      }, 2000);
+    };
+  };
+
   return (
     <div className="table-content w-full overflow-x-auto">
       <table className="w-full">
@@ -131,6 +147,9 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
                   key={transaction._id}
                   transaction={transaction}
                   bdSeller={bdSeller}
+                  filteredTransactions={filteredTransactions}
+                  handleDeleteTransaction={handleDeleteTransaction}
+                  success={success}
                   />
                 )
               ) : index < 3 && (
@@ -138,6 +157,9 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
                   key={transaction._id}
                   transaction={transaction}
                   bdSeller={bdSeller}
+                  filteredTransactions={filteredTransactions}
+                  handleDeleteTransaction={handleDeleteTransaction}
+                  success={success}
                 />
               )
             )}

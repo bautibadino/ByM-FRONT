@@ -92,7 +92,12 @@ const ListTab = ({ pageSize }) => {
       }
       
       const data = await response.json();
-  
+      const orderByDate = await data.data.transaction.sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA;
+      });
+      console.log(orderByDate)
       // Transformar las fechas aquí
       const transactionsWithFormattedDate = data.data.transaction.map((transaction) => {
         const date = transaction.createdAt;
@@ -161,7 +166,7 @@ const ListTab = ({ pageSize }) => {
       formattedDate: dateFormatted,
     };
     handleAddTransaction(dailyTransaction);
-    setTransactions([...transactions, dailyTransaction]);
+    setTransactions([dailyTransaction,...transactions]);
   };
 
   return (

@@ -5,24 +5,23 @@ import OptionsMenu from "./OptionsMenu";
 const ClientInfo = ({ id, img, name, email, location, cuit, fetchData, handleDeleted}) => {
   const [optionsActive, setOptionsActive] = useState(false);
   const [sucess , setSucess] = useState(false);
+  const [error , setError] = useState(false);
   const handleModify = (e) => {
 
   };
 
   const handleDelete = async (e) => {
-    console.log(id)
     await fetch(`http://localhost:4000/api/clients/${id}`, {
       method: "DELETE",
       })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Cliente eliminado con éxito", data);
         handleDeleted(id);
         setSucess(true);
 
         })
       .catch((error) => {
-        console.error("Error al eliminar el cliente", error);
+        setError(true);
       }
     );
     setTimeout(() => {

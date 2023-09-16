@@ -1,22 +1,25 @@
 import PropTypes from "prop-types";
 
 import { NavLink } from "react-router-dom";
+import { Sucess } from "../../component/alerts/Sucess";
 
-const OptionsTransactions = ({
+const  OptionsTransactions = ({
   userId,
-  nombre,
+  client,
   sucess,
-  active,
+  handleActive,
+  optionsActive,
   handleModify,
-  handleDelete,
   handleDisable,
+  success,
+  transaction,
+  handleDeleteTransaction,
 }) => {
-
-  console.log(userId)
+  console.log(success)
   return (
     <div
       className={
-        active
+        optionsActive
           ? "fixed inset-0 flex items-center justify-center z-50"
           : "hidden"
       }
@@ -26,14 +29,14 @@ const OptionsTransactions = ({
         <div className="absolute bg-darkblack-600 p-4 rounded-lg shadow-lg">
           <div className="m-3 flex justify-end ">
             <button
-              onClick={handleDisable}
+              onClick={handleActive}
               className="bg-red-500 px-2 rounded-md hover:bg-red-600 text-white"
             >
               x
             </button>
           </div>
           <h2 className="text-lg text-center font-semibold mb-4 text-slate-100">
-            {`¿Que desea hacer con ${nombre}?`}
+            {`¿Que desea hacer con la transaccion de ${client}?`}
           </h2>
 
           <div className="flex flex-row justify-center">
@@ -47,12 +50,12 @@ const OptionsTransactions = ({
             </NavLink>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded m-4"
-              onClick={handleDelete}
+              onClick={handleDeleteTransaction(transaction._id)}
             >
               Eliminar
             </button>
           </div>
-          {/* {sucess && <Sucess mensaje="Cliente eliminado con éxito" />} */}
+          {sucess && <Sucess mensaje="Transaccion eliminada con éxito" />}
         </div>
       </div>
     </div>

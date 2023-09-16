@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { SlOptionsVertical } from "react-icons/sl";
 import OptionsTransactions from "./OptionsTransactions";
 
-const TransactionInfo = ({ transaction, bdSeller }) => {
+const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDeleteTransaction , success}) => {
   const {
     client,
     paymentType,
@@ -16,18 +16,21 @@ const TransactionInfo = ({ transaction, bdSeller }) => {
   } = transaction;
   const [sellerName, setSellerName] = useState("");
   const [optionsActive, setOptionsActive] = useState(false);
-  if(optionsActive){
-    console.log('eeeeee')
-  }
+
 
   const getSellerName = async () => {
     bdSeller.find((vendedor) =>
       vendedor._id === seller ? setSellerName(vendedor.firstName) : null
     );
   };
+
   useEffect(() => {
     getSellerName();
-  }, []);
+  }, []); 
+  const handleActive = () => {
+    setOptionsActive(!optionsActive);
+  };
+
 
   return (
     <tr className="border-b border-bgray-300 dark:border-darkblack-400">
@@ -102,6 +105,15 @@ const TransactionInfo = ({ transaction, bdSeller }) => {
           >
             <SlOptionsVertical />
           </button>
+          <OptionsTransactions
+
+            transaction={transaction}
+            optionsActive={optionsActive}
+            handleActive={handleActive}
+            client={client}
+            handleDeleteTransaction={handleDeleteTransaction}
+            success={success}
+          />  
         </div>
       </td>
     </tr>
