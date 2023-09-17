@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { SlOptionsVertical } from "react-icons/sl";
 import OptionsTransactions from "./OptionsTransactions";
 
-const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDeleteTransaction , handleModify, success}) => {
+const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDeleteTransaction , handleModify, success ,successModify}) => {
   const {
     client,
     paymentType,
@@ -30,8 +30,7 @@ const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDel
   const handleActive = () => {
     setOptionsActive(!optionsActive);
   };
-
-
+  // console.log(transaction)
   return (
     <tr className="border-b border-bgray-300 dark:border-darkblack-400">
       <td className="px-6 py-5 xl:px-0">
@@ -58,6 +57,7 @@ const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDel
                 DEBIT_CARD: "Tarjeta de débito",
                 CHECK: "Cheque",
                 TRANSFER: "Transferencia",
+                OTHER: "Otro"
               }[paymentType]
             }
           </p>
@@ -106,7 +106,6 @@ const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDel
             <SlOptionsVertical />
           </button>
           <OptionsTransactions
-
             transaction={transaction}
             optionsActive={optionsActive}
             handleActive={handleActive}
@@ -114,7 +113,6 @@ const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDel
             handleDeleteTransaction={handleDeleteTransaction}
             success={success}
             handleModify={handleModify}
-            
           />  
         </div>
       </td>

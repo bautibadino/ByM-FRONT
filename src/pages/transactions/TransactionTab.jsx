@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import TransactionInfo from "./TransactionInfo";
 
 
-const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month, payment, handleModify}) => {
+const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month, payment, handleModify, successModify}) => {
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [monthNumber, setMonthNumber] = useState(0);
   const [success, setSuccess] = useState(false);
@@ -144,6 +144,7 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
               pageSize ? (
                 index + 1 <= pageSize && (
                   <TransactionInfo
+                  successModify={successModify}
                   key={transaction._id}
                   transaction={transaction}
                   bdSeller={bdSeller}
@@ -155,6 +156,7 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
                 )
               ) : index < 3 && (
                 <TransactionInfo
+                  successModify={successModify}
                   key={transaction._id}
                   transaction={transaction}
                   bdSeller={bdSeller}

@@ -70,8 +70,9 @@ const ClientInfo = ({ id, img, name, email, location, cuit, fetchData, handleDel
             aria-label="Options"
             type="button"
             onClick={() => setOptionsActive(true)}
+            className="text-darkblack-600 dark:text-white"
           >
-            <SlOptionsVertical />
+            <SlOptionsVertical className=""/>
           </button>
           <OptionsMenu
             nombre={name}

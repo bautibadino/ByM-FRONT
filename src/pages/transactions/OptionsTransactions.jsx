@@ -14,6 +14,7 @@ const  OptionsTransactions = ({
   transaction,
   handleDeleteTransaction,
 }) => {
+
   return (
     <div
       className={

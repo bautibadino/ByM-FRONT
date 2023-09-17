@@ -21,6 +21,8 @@ const ListTab = ({ pageSize }) => {
   const [transactions, setTransactions] = useState([]);
   const [currentOrder, setCurrentOrder] = useState(null);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
+  const [successModify, setSuccessModify] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(""); 
   const [editedData, setEditedData] = useState({
     client: "",
     seller: "",
@@ -176,12 +178,11 @@ const ListTab = ({ pageSize }) => {
       total,
       formattedDate: dateFormatted,
     };
+
     handleAddTransaction(dailyTransaction);
     setTransactions([dailyTransaction, ...transactions]);
   };
-
   const handleModify = (id) => {
-    console.log(`modificar ${id}`);
     setIsModifyModalOpen(true);
     const order = transactions.find((transaction) => transaction._id === id);
     setCurrentOrder(order);
@@ -205,11 +206,11 @@ const ListTab = ({ pageSize }) => {
       },
       body: JSON.stringify(editedData),
     })
-    .then (response => response.json())
-    .then (data => console.log(data))
-    .catch (error => console.log(error))
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
 
-    setSuccess(true);
+    setSuccessModify(true);
     transactions.filter((transaction) => {
       if (transaction._id === currentOrder._id) {
         transaction.client = editedData.client;
@@ -221,12 +222,15 @@ const ListTab = ({ pageSize }) => {
       }
     });
     setTimeout(() => {
-      setSuccess(false);
+      setSuccessModify(false);
       setIsModifyModalOpen(false);
     }, 2000);
-
   };
-
+  const handleStatusChange = (e) => {
+    const newStatus = e.target.value;
+    console.log(newStatus)
+    setSelectedStatus(newStatus); // Actualiza el estado al cambiar el estado seleccionado
+  };
   return (
     <div className="w-full rounded-lg bg-white px-[24px] py-[20px] dark:bg-darkblack-600 ">
       <div className="flex flex-col items-center justify-center  md:justify-between mb-6 md:flex-row ">
@@ -284,6 +288,7 @@ const ListTab = ({ pageSize }) => {
           seller={seller}
           payment={payment}
           handleModify={handleModify}
+          successModify={successModify}
         />
         {/* <Pagination
           pagesQuantity={pagesQuantity}
@@ -340,30 +345,6 @@ const ListTab = ({ pageSize }) => {
 
               <div className="flex flex-col">
                 <div className="flex flex-row w-full">
-                  <div className="mx-2 mb-4 w-1/2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Medio de pago
-                    </label>
-                    <select
-                      type="text"
-                      id="paymentType"
-                      name="paymentType"
-                      className="border rounded-lg px-3 py-2 w-full"
-                      defaultValue={""}
-                    >
-                      <option disabled value=""></option>
-                      {paymentSelector.map((payment) => (
-                        <option
-                          className="mt-4"
-                          name="paymentType"
-                          key={payment.id}
-                          value={payment.id}
-                        >
-                          {payment.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
                   <div className="flex flex-col mx-2 mb-4 w-1/2">
                     <label className="block text-sm font-medium text-gray-700">
                       Estado de venta
@@ -374,6 +355,8 @@ const ListTab = ({ pageSize }) => {
                       name="status"
                       className="border rounded-lg px-3 py-2 w-full"
                       defaultValue={""}
+                      value={selectedStatus}
+                      onChange={handleStatusChange}
                     >
                       <option disabled value=""></option>
                       {sellState.map((state) => (
@@ -384,6 +367,31 @@ const ListTab = ({ pageSize }) => {
                           key={state.id}
                         >
                           {state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mx-2 mb-4 w-1/2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Medio de pago
+                    </label>
+                    <select
+                      type="text"
+                      id="paymentType"
+                      name="paymentType"
+                      className="border rounded-lg px-3 py-2 w-full"
+                      defaultValue={""}
+                      disabled={true}
+                    > 
+                      <option disabled value=""></option>
+                      {paymentSelector.map((payment) => (
+                        <option
+                          className="mt-4"
+                          name="paymentType"
+                          key={payment.id}
+                          value={payment.id}
+                        >
+                          {payment.name}
                         </option>
                       ))}
                     </select>
@@ -610,7 +618,9 @@ const ListTab = ({ pageSize }) => {
                 </button>
               </div>
 
-              {success && <Sucess mensaje="Transaccion creada con éxito" />}
+              {successModify && (
+                <Sucess mensaje="Transaccion modificada con éxito" />
+              )}
               {error && <Error mensaje="Compruebe los datos ingresados" />}
             </form>
           </div>
