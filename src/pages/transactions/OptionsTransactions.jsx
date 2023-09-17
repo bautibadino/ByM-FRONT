@@ -10,12 +10,10 @@ const  OptionsTransactions = ({
   handleActive,
   optionsActive,
   handleModify,
-  handleDisable,
   success,
   transaction,
   handleDeleteTransaction,
 }) => {
-  console.log(success)
   return (
     <div
       className={
@@ -40,14 +38,12 @@ const  OptionsTransactions = ({
           </h2>
 
           <div className="flex flex-row justify-center">
-            <NavLink to={`/clientes/${userId}`}>
               <button
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-4"
-                onClick={handleModify}
+                onClick={ e => handleModify(transaction._id)}
               >
                 Modificar
               </button>
-            </NavLink>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded m-4"
               onClick={handleDeleteTransaction(transaction._id)}

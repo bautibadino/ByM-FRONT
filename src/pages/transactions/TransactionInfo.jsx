@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { SlOptionsVertical } from "react-icons/sl";
 import OptionsTransactions from "./OptionsTransactions";
 
-const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDeleteTransaction , success}) => {
+const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDeleteTransaction , handleModify, success}) => {
   const {
     client,
     paymentType,
@@ -113,6 +113,8 @@ const TransactionInfo = ({ transaction, bdSeller,filteredTransactions, handleDel
             client={client}
             handleDeleteTransaction={handleDeleteTransaction}
             success={success}
+            handleModify={handleModify}
+            
           />  
         </div>
       </td>
