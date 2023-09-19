@@ -76,6 +76,18 @@ function Sidebar({ handleActive }) {
                 </Link>
               </li>
               
+
+              <li className="item py-[11px] text-bgray-900 dark:text-white">
+                <Link to="/services">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2.5">
+                      <span className="item-text text-lg font-medium leading-none">
+                        Services
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

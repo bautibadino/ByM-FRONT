@@ -16,9 +16,9 @@ import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
 import ComingSoon from "./pages/commingSoon";
 import Error from "./pages/error";
-import PersonalInfo from "./component/settings/PersonalInfo";
 import { ClientProfile } from "./component/listTab/clientProfile";
 import Transaction from "./pages/transactions/Transaction";
+import Services from "./pages/carServices/Services";
 
 
 const router = createBrowserRouter([
@@ -38,7 +38,10 @@ const router = createBrowserRouter([
     path: "/transacciones",
     element: <Transaction/>,
   },
-
+  {
+    path: "/services",
+    element: <Services/>,
+  },
 
   
 

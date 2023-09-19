@@ -28,7 +28,8 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
     "Tarjeta de crédito": "CREDIT_CARD",
     "Tarjeta de débito": "DEBIT_CARD",
     "Cheque": "CHECK",
-    "Transferencia": "TRANSFER"
+    "Transferencia": "TRANSFER",
+    "Otro": "OTHER"
   }
 
 

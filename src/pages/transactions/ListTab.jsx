@@ -43,6 +43,7 @@ const ListTab = ({ pageSize }) => {
     { id: "DEBIT_CARD", name: "DEBITO" },
     { id: "BANK_TRANSFER", name: "TRANSFERENCIA" },
     { id: "CHECK", name: "CHEQUE" },
+    { id: "OTHER", name: "OTRO" },
   ];
 
   const getSellers = async () => {
@@ -381,7 +382,6 @@ const ListTab = ({ pageSize }) => {
                       name="paymentType"
                       className="border rounded-lg px-3 py-2 w-full"
                       defaultValue={""}
-                      disabled={true}
                     > 
                       <option disabled value=""></option>
                       {paymentSelector.map((payment) => (
@@ -426,7 +426,7 @@ const ListTab = ({ pageSize }) => {
                   </div>
                 </div>
               </div>
-              {/* Repite esto para los otros campos del formulario */}
+
               <div className="flex justify-end">
                 <button
                   className=" text-white bg-gradient-to-r from-red-300 to-red-500 rounded-lg px-4 py-2 hover:bg-blue-600"
