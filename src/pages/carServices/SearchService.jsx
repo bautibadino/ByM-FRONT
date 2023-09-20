@@ -16,6 +16,8 @@ const SearchService = () => {
   const [services, setServices] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+
   const handleFetch = async () => {
     try {
       const response = await fetch("http://localhost:4000/api/services");
@@ -40,48 +42,59 @@ const SearchService = () => {
     setSearchByPatent(newValue);
   };
 
-const handleSearchByOwner = (e) => {
-  const newValue = e.target.value;
-  setSearchByOwner(newValue);
-};
-
+  const handleSearchByOwner = (e) => {
+    const newValue = e.target.value;
+    setSearchByOwner(newValue);
+  };
 
   const filterServicesByPatent = () => {
     const filtered = services.filter((service) => {
       return (
-        service.patent &&
-        service.patent.toLowerCase().includes(searchByPatent.toLowerCase()) || 
-        service.owner.ownerName && service.owner.ownerName.toLowerCase().includes(searchByPatent.toLowerCase())
+        (service.patent &&
+          service.patent
+            .toLowerCase()
+            .includes(searchByPatent.toLowerCase())) ||
+        (service.owner.ownerName &&
+          service.owner.ownerName
+            .toLowerCase()
+            .includes(searchByPatent.toLowerCase()))
       );
     });
     setFilteredServices(filtered);
   };
 
   const filterServicesByOwner = () => {
-  const filtered = services.filter((service) => {
-  return (
-    service.owner.ownerName &&
-    service.owner.ownerName.toLowerCase().includes(searchByOwner.toLowerCase())
-  );
-  })
-  setFilteredServices(filtered);
+    const filtered = services.filter((service) => {
+      return (
+        service.owner.ownerName &&
+        service.owner.ownerName
+          .toLowerCase()
+          .includes(searchByOwner.toLowerCase())
+      );
+    });
+    setFilteredServices(filtered);
+    console.log(filtered);
   };
 
   useEffect(() => {
     filterServicesByPatent();
-  }, [searchByPatent]); 
+  }, [searchByPatent]);
 
   useEffect(() => {
     filterServicesByOwner();
   }, [searchByOwner]);
 
-  const handleModal = (event, id) => {
-    event.preventDefault();
-    setOpenModal(!openModal);
-    
-    console.log(openModal,id)
-  }
-  return ( 
+  const handleModal = (event, service) => {
+    event.preventDefault(); // Evitar que el formulario se envíe
+    if (selectedService && selectedService._id === service._id) {
+      // Si se hace clic en el mismo servicio, cierra el modal
+      setSelectedService(null);
+    } else {
+      // Si se hace clic en un servicio diferente, abre el modal con ese servicio
+      setSelectedService(service);
+    }
+  };
+  return (
     <div className="w-full rounded-lg bg-white px-[24px] py-[20px] dark:bg-darkblack-600 ">
       <div className="flex flex-row w-full ">
         <h2 className="text-darkblack-600 text-2xl w-1/4 text-center dark:text-white mb-8">
@@ -140,28 +153,43 @@ const handleSearchByOwner = (e) => {
               </div>
               <ul className="w-full dark:text-white">
                 {filteredServices?.map((service) => (
-                  <li className="flex flex-row justify-between items-center border-b-2 border-gray-200 py-6 dark:text-white ">
-                    <div className="w-1/6 text-md text-center">
-                      <span>{service.Date.split("T")[0]}</span>
+                  <li className="flex flex-col justify-between items-center border-b-2 border-gray-200 py-6 dark:text-white ">
+                    <div className="flex flex-row w-full">
+                      <div className="w-1/6 text-md text-center">
+                        <span>{service.Date.split("T")[0]}</span>
+                      </div>
+                      <div className="w-1/6 text-md text-center">
+                        <span>{service.patent}</span>
+                      </div>
+                      <div className="w-1/6 text-md text-center">
+                        <span>{service.vehicle.brand}</span>
+                      </div>
+                      <div className="w-1/6 text-md text-center">
+                        <span>{service.owner.ownerName}</span>
+                      </div>
+                      <div className="w-1/6 text-md text-center">
+                        <span>{service.km}</span>
+                      </div>
+                      <button
+                        className="text-lg text-center bg-slate-200 p-2 rounded-md dark:bg-darkblack-400"
+                        onClick={(event) => handleModal(event, service)}
+                      >
+                        <BsArrowBarDown />
+                      </button>
                     </div>
-                    <div className="w-1/6 text-md text-center">
-                      <span>{service.patent}</span>
-                    </div>
-                    <div className="w-1/6 text-md text-center">
-                      <span>{service.vehicle.brand}</span>
-                    </div>
-                    <div className="w-1/6 text-md text-center">
-                      <span>{service.owner.ownerName}</span>
-                    </div>
-                    <div className="w-1/6 text-md text-center">
-                      <span>{service.km}</span>
-                    </div>
-                    <button 
-                    className="text-lg text-center bg-slate-200 p-2 rounded-md dark:bg-darkblack-400"
-                    onClick={(e) => handleModal(e, service._id)}
-                    >
-                      <BsArrowBarDown />
-                    </button>
+                    {selectedService && selectedService._id === service._id && (
+                      <div className="flex flex-col w-full mt-10">
+                        <div className="flex flex-row">
+                          <div className="flex flex-col w-1/3">
+                            <span>Aceite motor</span>
+                            <div className="flex flex-row bg-darkblack-400">
+                              <span>{service.motorOil.OilType}</span>
+                              <span>{service.motorOil.changed ? 'OK' : 'X'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
