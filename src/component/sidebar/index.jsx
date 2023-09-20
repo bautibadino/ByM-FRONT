@@ -8,6 +8,10 @@ import { useState } from "react";
 
 function Sidebar({ handleActive }) {
   const [activeDashboard, setActiveDashboard] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(false);
+  const handleActiveDropdown = () => {
+    setActiveDropdown(!activeDropdown);
+  };
   return (
     <aside className="sidebar-wrapper fixed top-0 z-30 block h-full w-[308px] bg-white dark:bg-darkblack-600 sm:hidden xl:block">
       <div className="sidebar-header relative z-30 flex h-[108px] w-full items-center border-b border-r border-b-[#F7F7F7] border-r-[#F7F7F7] pl-[50px] dark:border-darkblack-400">
@@ -52,7 +56,7 @@ function Sidebar({ handleActive }) {
               Menu
             </h4>
             <ul className="mt-2.5">
-            <li className="item py-[11px] text-bgray-900 dark:text-white">
+              <li className="item pt-5 text-bgray-900 dark:text-white">
                 <Link to="/transacciones">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2.5">
@@ -64,7 +68,7 @@ function Sidebar({ handleActive }) {
                 </Link>
               </li>
 
-              <li className="item py-[11px] text-bgray-900 dark:text-white">
+              <li className="item pt-5 text-bgray-900 dark:text-white">
                 <Link to="/clientes">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2.5">
@@ -75,25 +79,46 @@ function Sidebar({ handleActive }) {
                   </div>
                 </Link>
               </li>
-              
 
-              <li className="item py-[11px] text-bgray-900 dark:text-white">
-                <Link to="/services">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2.5">
-                      <span className="item-text text-lg font-medium leading-none">
-                        Services
-                      </span>
-                    </div>
+              <div className="dropdown">
+                <button onClick={handleActiveDropdown}>
+                  <li className="item pt-5 text-bgray-900 dark:text-white">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2.5">
+                          <span className="item-text text-lg font-medium leading-none">
+                            Services
+                          </span>
+                        </div>
+                      </div>
+                  </li>
+                </button>
+                {activeDropdown && (
+                  <div>
+                    <Link to="/services/nuevo-service">
+                      <div className="ml-3 mt-4 flex items-center justify-between">
+                        <div className="flex items-center space-x-2.5">
+                          <span className="item-text text-md font-light leading-none">
+                            Services2
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                    <Link to="/services/consulta">
+                      <div className="ml-3 mt-4 flex items-center justify-between">
+                        <div className="flex items-center space-x-2.5">
+                          <span className="item-text text-md font-light leading-none">
+                            Services3
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
-              </li>
+                )}
+              </div>
             </ul>
           </div>
         </div>
-        </div>
-        
-
+      </div>
     </aside>
   );
 }

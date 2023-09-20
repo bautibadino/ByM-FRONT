@@ -19,6 +19,8 @@ import Error from "./pages/error";
 import { ClientProfile } from "./component/listTab/clientProfile";
 import Transaction from "./pages/transactions/Transaction";
 import Services from "./pages/carServices/Services";
+import { CreateService } from "./pages/carServices/CreateService";
+import SearchService from "./pages/carServices/SearchService";
 
 
 const router = createBrowserRouter([
@@ -38,9 +40,23 @@ const router = createBrowserRouter([
     path: "/transacciones",
     element: <Transaction/>,
   },
+  // {
+  //   path: "/services",
+  //   element: <Services/>,
+  // },
   {
-    path: "/services",
-    element: <Services/>,
+    path: "/services/nuevo-service",
+    element: 
+      <Services>
+        <CreateService/>
+      </Services>
+  },
+  {
+    path: "/services/consulta",
+    element: 
+      <Services>
+        <SearchService/>
+      </Services>
   },
 
   

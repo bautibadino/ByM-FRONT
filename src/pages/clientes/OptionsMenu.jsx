@@ -12,7 +12,6 @@ const OptionsMenu = ({
   handleDisable,
 }) => {
 
-  console.log(userId)
   return (
     <div
       className={
