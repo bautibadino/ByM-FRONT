@@ -16,8 +16,11 @@ function Sidebar({ handleActive }) {
     <aside className="sidebar-wrapper fixed top-0 z-30 block h-full w-[308px] bg-white dark:bg-darkblack-600 sm:hidden xl:block">
       <div className="sidebar-header relative z-30 flex h-[108px] w-full items-center border-b border-r border-b-[#F7F7F7] border-r-[#F7F7F7] pl-[50px] dark:border-darkblack-400">
         <Link to="/">
-          <img src={logo} className="block dark:hidden" alt="logo" />
-          <img src={logoW} className="hidden dark:block" alt="logo" />
+          {/* <img src={logo} className="block dark:hidden" alt="logo" />
+          <img src={logoW} className="hidden dark:block" alt="logo" /> */}
+          <h1 className="text-2xl font-bold text-darkblack-600 dark:text-white">
+            B&M SRL
+          </h1>
         </Link>
         <button
           aria-label="none"

@@ -10,25 +10,77 @@ const formattedDate = `${day.toString().padStart(2, "0")}/${month
   .toString()
   .padStart(2, "0")}/${year}`;
 
-export const CreateService = () => {
+export const CreateService = ({ services }) => {
   const [search, setSearch] = useState("");
-  const [services, setServices] = useState([]);
-
-  const handleFetch = async () => {
-    const response = await fetch(
-      'http://localhost:4000/api/services'
-    );
-    const data = await response.json();
-    console.log(data);
-  }
-  useEffect(() => {
-    handleFetch();
-  }
-  , [])
+  const [filteredServices, setFilteredServices] = useState([]);
+  const [previousSearch, setPreviousSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedSuggestion, setSelectedSuggestion] = useState("");
+  const [selectedService, setSelectedService] = useState(null);
   const handleSearch = (e) => {
     const newValue = e.target.value;
     setSearch(newValue);
-  }
+    updateSuggestions(newValue);
+  };
+
+  const updateSuggestions = (query) => {
+    if (query === "") {
+      setSuggestions([]);
+    } else {
+      const suggested = services
+        .filter((service) => {
+          return (
+            service.patent &&
+            service.patent.toLowerCase().includes(query.toLowerCase())
+          );
+        })
+        .map((service) => service.patent)
+        .slice(0, 5);
+      setSuggestions(suggested);
+    }
+  };
+
+  const filterServicesByPatent = () => {
+    if (search === "") {
+      setFilteredServices([]);
+    } else {
+      const filtered = services.filter((service) => {
+        return (
+          service.patent &&
+          service.patent.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+      setFilteredServices(filtered);
+    }
+  };
+  const handleSuggestionClick = (suggestion) => {
+    setSelectedSuggestion(suggestion);
+    setSearch(suggestion); // Establecer la sugerencia seleccionada en el campo de búsqueda.
+    setSuggestions([]); // Cerrar la lista de sugerencias al hacer clic.
+  };
+
+  useEffect(() => {
+    if (search.startsWith(previousSearch)) {
+      // Si la búsqueda actual comienza con la búsqueda anterior, solo filtramos los resultados actuales.
+      filterServicesByPatent();
+    } else {
+      // Si la búsqueda actual no comienza con la búsqueda anterior, filtramos desde el conjunto completo de servicios.
+      setFilteredServices([]);
+      setPreviousSearch(search);
+    }
+  }, [search, previousSearch, services]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+
+    //al dar click buscar el service por la pantente y mostrarlo en el formulario
+    search.includes(" ") ? alert("no se puede buscar con espacios") : null;
+
+    const service = services.find((service) => service.patent === search);
+    setSelectedService(service);
+  };
+  console.log(selectedService);
+
   return (
     <div className="w-full rounded-lg bg-white px-[24px] py-[20px] dark:bg-darkblack-600 ">
       <div className="flex flex-row w-full ">
@@ -37,18 +89,40 @@ export const CreateService = () => {
         </h2>
       </div>
       <div className="flex flex-col justify-center mt-6">
-        <form>
-          <div className="flex flex-row w-full items-center">
+        <form className="">
+          <div className="flex flex-row w-full justify-between">
             <div className="flex flex-col mr-4">
-              <label htmlFor="patent">Patente</label>
-              <input
-                className=" border-none bg-slate-100 rounded-md"
-                name="search"
-                onChange={handleSearch}
-              />
+              <div className="flex flex-col">
+                <label htmlFor="patent" className="dark:text-white">Patente</label>
+                <div className="flex flex-row">
+                  <input
+                    className=" border-none bg-slate-100 rounded-md w-1/2"
+                    name="search"
+                    onChange={handleSearch}
+                    value={search}
+                  />
+                  <button
+                    className="ml-4 flex justify-center items-center bg-yellow-400 px-4 rounded-md shadow-md active:shadow-sm"
+                    onClick={handleSearchSubmit}
+                  >
+                    nuevo service
+                  </button>
+                </div>
+              </div>
+              <div className="suggestions bg-slate-200 flex flex-col items-center justify-center mt-1 rounded-md shadow-md w-1/2">
+                {suggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="suggestion-item my-2 w-full text-center cursor-pointer pb-2 shadow-sm hover:scale-105 transition-all duration-200 ease-in-out"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    {suggestion}
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="patent">Fecha</label>
+              <label htmlFor="patent" className="dark:text-white">Fecha</label>
               <input
                 className="w-3/4 border-none bg-slate-100 rounded-md"
                 name="search"
@@ -59,54 +133,190 @@ export const CreateService = () => {
           <div className="flex flex-col my-5">
             <div className="flex flex-row mt-4">
               <div className="flex flex-col w-1/3">
-                <span>Marca</span>
+                <span className="dark:text-white">Marca</span>
                 <input
                   className="rounded-md border-none bg-slate-100"
                   name=""
                   placeholder="Ford"
                   type="text"
+                  value={selectedService?.vehicle.brand}
                 />
               </div>
               <div className=" ml-4 flex flex-col w-1/3">
-                <span>Modelo</span>
+                <span className="dark:text-white">Modelo</span>
                 <input
                   className="rounded-md border-none bg-slate-200"
                   name=""
                   placeholder="Fiesta"
                   type="text"
+                  value={selectedService?.vehicle.model}
                 />
               </div>
               <div className="w-1/5 ml-4 flex flex-col">
-                <span>Año</span>
+                <span className="dark:text-white">Año</span>
                 <input
                   className="rounded-md border-none bg-slate-100"
                   name="year"
                   placeholder="2019"
                   type="text"
+                  value={selectedService?.vehicle.year}
                 />
               </div>
             </div>
             <div className="flex flex-row my-5">
               <div className="flex flex-col w-1/3">
-                <span>Propietario</span>
+                <span className="dark:text-white">Propietario</span>
                 <input
                   className="rounded-md border-none bg-slate-100"
                   name=""
                   placeholder="Propietario"
                   type="text"
+                  value={selectedService?.owner.ownerName}
                 />
               </div>
               <div className="flex flex-col w-1/3 ml-4">
-                <span>Correo</span>
+                <span className="dark:text-white">Correo</span>
                 <input
                   className="  rounded-md border-none bg-slate-200"
                   name="email"
                   placeholder="juancito@gmail.com"
                   type="email"
+                  value={selectedService?.owner.email}
                 />
               </div>
             </div>
-
+          </div>
+          <div className="flex flex-col justify-start items-start">
+            <div className="flex flex-col w-full items-center mt-10">
+              <div className="flex flex-col w-1/4 mx-3">
+                <label htmlFor="patent" className="dark:text-white">Aceite motor</label>
+                <div className="flex flex-row">
+                  <input
+                    className="w-full border-none bg-slate-100 rounded-md dark:text-darkblack-600"
+                    name="motorOil"
+                  />
+                  <select className="border-none bg-slate-100 rounded-md mx-2 dark:text-darkblack-600">
+                    <option className="" value="true">
+                      Si
+                    </option>
+                    <option className="" value="false">
+                      No
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex flex-col w-1/4 mx-3">
+                <label htmlFor="patent" className="dark:text-white">Aceite caja</label>
+                <div className="flex flex-row">
+                  <input
+                    className="w-full border-none bg-slate-100 rounded-md dark:text-darkblack-600"
+                    name="gearBoxOil"
+                  />
+                  <select className="border-none bg-slate-100 rounded-md mx-2 dark:text-darkblack-600">
+                    <option className="" value="true">
+                      Si
+                    </option>
+                    <option className="" value="false">
+                      No
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex flex-col w-1/4 mx-3">
+                <label htmlFor="patent" className="dark:text-white">Aceite direccion</label>
+                <div className="flex flex-row">
+                  <input
+                    className="w-full border-none bg-slate-100 rounded-md dark:text-darkblack-600"
+                    name="steeringOil"
+                  />
+                  <select className="border-none bg-slate-100 rounded-md mx-2 dark:text-darkblack-600">
+                    <option className="" value="true">
+                      Si
+                    </option>
+                    <option className="" value="false">
+                      No
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex flex-row mt-6 m-3 w-1/3">
+                  <div className="flex flex-col">
+                    <label htmlFor="patent" className="dark:text-white">Filtro de aire</label>
+                    <div className="flex flex-row">
+                      <input
+                        className="w-full border-none bg-slate-100 rounded-md dark:text-darkblack-600"
+                        name="airFilter"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                      <label className="">cambio</label>
+                      <select className="border-none bg-slate-100 rounded-md mx-2 dark:text-darkblack-600">
+                        <option className="" value="true">
+                          Si
+                        </option>
+                        <option className="" value="false">
+                          No
+                        </option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="">revisado</label>
+                      <select className="border-none bg-slate-100 rounded-md mx-2 dark:text-darkblack-600">
+                        <option className="" value="true">
+                          Si
+                        </option>
+                        <option className="" value="false">
+                          No
+                        </option>
+                      </select>
+                    </div>
+              </div>
+              <div className="flex flex-row mt-6 m-3 w-1/4">
+                  <div className="flex flex-col">
+                    <label htmlFor="patent" className="dark:text-white">Filtro de aceite</label>
+                    <div className="flex flex-row">
+                      <input
+                        className="w-full border-none bg-slate-100 rounded-md dark:text-darkblack-600"
+                        name="airFilter"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                      <label className="">cambio</label>
+                      <select className="border-none bg-slate-100 rounded-md mx-2 dark:text-darkblack-600">
+                        <option className="" value="true">
+                          Si
+                        </option>
+                        <option className="" value="false">
+                          No
+                        </option>
+                      </select>
+                    </div>
+              </div>
+              <div className="flex flex-row mt-6 m-3 w-1/3">
+                  <div className="flex flex-col">
+                    <label htmlFor="patent" className="dark:text-white">Filtro de combustible</label>
+                    <div className="flex flex-row">
+                      <input
+                        className="w-full border-none bg-slate-100 rounded-md dark:text-darkblack-600"
+                        name="airFilter"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                      <label className="">cambio</label>
+                      <select className="border-none bg-slate-100 rounded-md mx-2 dark:text-darkblack-600">
+                        <option className="" value="true">
+                          Si
+                        </option>
+                        <option className="" value="false">
+                          No
+                        </option>
+                      </select>
+                    </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>

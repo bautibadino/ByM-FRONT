@@ -10,32 +10,14 @@ const formattedDate = `${day.toString().padStart(2, "0")}/${month
   .toString()
   .padStart(2, "0")}/${year}`;
 
-const SearchService = () => {
+const SearchService = ({services}) => {
   const [searchByPatent, setSearchByPatent] = useState("");
   const [searchByOwner, setSearchByOwner] = useState("");
-  const [services, setServices] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
 
-  const handleFetch = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/api/services");
-      if (response.ok) {
-        const data = await response.json();
-        const dataServices = data.data.servicesWithOwners;
-        setServices(dataServices);
-      } else {
-        console.error("API request failed with status:", response.status);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
-  useEffect(() => {
-    handleFetch();
-  }, []);
 
   const handleSearchByPatent = (e) => {
     const newValue = e.target.value;
@@ -50,14 +32,8 @@ const SearchService = () => {
   const filterServicesByPatent = () => {
     const filtered = services.filter((service) => {
       return (
-        (service.patent &&
-          service.patent
-            .toLowerCase()
-            .includes(searchByPatent.toLowerCase())) ||
-        (service.owner.ownerName &&
-          service.owner.ownerName
-            .toLowerCase()
-            .includes(searchByPatent.toLowerCase()))
+        service.patent &&
+        service.patent.toLowerCase().includes(searchByPatent.toLowerCase())
       );
     });
     setFilteredServices(filtered);
@@ -153,21 +129,21 @@ const SearchService = () => {
               </div>
               <ul className="w-full dark:text-white">
                 {filteredServices?.map((service) => (
-                  <li className="flex flex-col justify-between items-center border-b-2 border-gray-200 py-6 dark:text-white ">
-                    <div className="flex flex-row w-full">
-                      <div className="w-1/6 text-md text-center">
+                  <li className="flex flex-col justify-center items-center border-b-2 border-gray-200 py-6 dark:text-white ">
+                    <div className="flex flex-row justify-around items-center w-full ">
+                      <div className="w-1/6 text-center">
                         <span>{service.Date.split("T")[0]}</span>
                       </div>
-                      <div className="w-1/6 text-md text-center">
+                      <div className="w-1/6 text-center">
                         <span>{service.patent}</span>
                       </div>
-                      <div className="w-1/6 text-md text-center">
+                      <div className="w-1/6 text-center">
                         <span>{service.vehicle.brand}</span>
                       </div>
-                      <div className="w-1/6 text-md text-center">
+                      <div className="w-1/6 text-center">
                         <span>{service.owner.ownerName}</span>
                       </div>
-                      <div className="w-1/6 text-md text-center">
+                      <div className="w-1/6 text-center">
                         <span>{service.km}</span>
                       </div>
                       <button
@@ -178,14 +154,99 @@ const SearchService = () => {
                       </button>
                     </div>
                     {selectedService && selectedService._id === service._id && (
-                      <div className="flex flex-col w-full mt-10">
-                        <div className="flex flex-row">
-                          <div className="flex flex-col w-1/3">
-                            <span>Aceite motor</span>
-                            <div className="flex flex-row bg-darkblack-400">
-                              <span>{service.motorOil.OilType}</span>
-                              <span>{service.motorOil.changed ? 'OK' : 'X'}</span>
+                      <div className="flex flex-col w-full mt-8 ">
+                        <div className="flex flex-col justify-center items-center md:flex-row md:justify-between ">
+                          <div className="flex flex-col w-3/4 md:1/3 m-3">
+                            <span className="mb-4">Aceite motor</span>
+                            <div className="flex flex-row justify-between bg-slate-200  p-3 rounded-md dark:bg-darkblack-400">
+                              <span className="">
+                                {service.motorOil.OilType}
+                              </span>
+                              <span className="">
+                                {service.motorOil.changed === true && "SI"}
+                              </span>
                             </div>
+                          </div>
+
+                          <div className="flex flex-col w-3/4 md:1/3 m-3">
+                            <span className="mb-4">Aceite caja</span>
+                            <div className="flex flex-row justify-between bg-slate-200 p-3 rounded-md dark:bg-darkblack-400">
+                              <span className="">
+                                {service.gearboxOil.OilType}
+                              </span>
+                              <span className="">
+                                {service.gearboxOil.changed ? "SI" : "NO"}{" "}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col w-3/4 md:1/3 m-3">
+                            <span className="mb-4">Aceite direccion</span>
+                            <div className="flex flex-row justify-between bg-slate-200 p-3 rounded-md dark:bg-darkblack-400 shadow-md">
+                              <span className="">
+                                {service.steeringOil.OilType}
+                              </span>
+                              <span className="">
+                                {service.steeringOil.changed ? "SI" : "NO"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col justify-center items-center md:flex-row md:justify-between ">
+                          <div className="flex flex-col items-start md:items-end text-center w-3/4 md:1/3 m-3">
+                            <span className="mb-4">Filtro de aceite</span>
+                            <div className="flex flex-col w-1/2 m-1">
+                              <div className="w-full flex flex-row justify-between bg-slate-200 p-3 rounded-md dark:bg-darkblack-400">
+                                <span>
+                                  {service.oilFilter.changed ? "SI" : "NO"}
+                                </span>
+                              </div>
+                              <span className="text-center">
+                                cambio
+                              </span>
+                              </div>
+                          </div>
+
+                          <div className="flex flex-col w-3/4 md:1/3 m-3 text-center">
+                            <span className="mb-4">Filtro de aire</span>
+                            <div className=" flex flex-row">
+                            <div className="flex flex-col w-1/2 m-1">
+                              <div className="w-full flex flex-row justify-between bg-slate-200 p-3 rounded-md dark:bg-darkblack-400">
+                                <span>
+                                  {service.airFilter.changed ? "SI" : "NO"}
+                                </span>
+                              </div>
+                              <span className="text-center">
+                                cambio
+                              </span>
+                              </div>
+
+                              <div className="flex flex-col w-1/2 m-1 text-center">
+                              <div className="w-full flex flex-row justify-between bg-slate-200 p-3 rounded-md dark:bg-darkblack-400">
+                                <span>
+                                  {service.airFilter.reviewed ? "SI" : "NO"}
+                                </span>
+                              </div>
+                              <span className="text-center">
+                                revisado
+                              </span>
+                              </div>
+
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col w-3/4 md:1/3 m-3">
+                            <span className="mb-4">Filtro de combustible</span>
+                            <div className="flex flex-col w-1/2 m-1">
+                              <div className="w-full flex flex-row justify-between bg-slate-200 p-3 rounded-md dark:bg-darkblack-400">
+                                <span>
+                                  {service.fuelFilter.changed ? "SI" : "NO"}
+                                </span>
+                              </div>
+                              <span className="text-center">
+                                cambio
+                              </span>
+                              </div>
                           </div>
                         </div>
                       </div>
