@@ -132,7 +132,7 @@ const SearchService = ({services}) => {
                   <li className="flex flex-col justify-center items-center border-b-2 border-gray-200 py-6 dark:text-white ">
                     <div className="flex flex-row justify-around items-center w-full ">
                       <div className="w-1/6 text-center">
-                        <span>{service.Date.split("T")[0]}</span>
+                        {/* <span>{service.Date.split("T")[0]}</span> */}
                       </div>
                       <div className="w-1/6 text-center">
                         <span>{service.patent}</span>

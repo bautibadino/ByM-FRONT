@@ -101,7 +101,7 @@ function Sidebar({ handleActive }) {
                       <div className="ml-3 mt-4 flex items-center justify-between">
                         <div className="flex items-center space-x-2.5">
                           <span className="item-text text-md font-light leading-none">
-                            Services2
+                            Nuevo service
                           </span>
                         </div>
                       </div>
@@ -110,7 +110,7 @@ function Sidebar({ handleActive }) {
                       <div className="ml-3 mt-4 flex items-center justify-between">
                         <div className="flex items-center space-x-2.5">
                           <span className="item-text text-md font-light leading-none">
-                            Services3
+                            Buscar service
                           </span>
                         </div>
                       </div>

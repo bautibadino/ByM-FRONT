@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Error = ({mensaje}) => {
+export const Error = ({mensaje, descripcion}) => {
   return (
     <div class="mt-3 flex justify-center items-center m-1 font-medium py-1 px-2 bg-white rounded-md text-red-700 bg-red-100 border border-red-300 ">
       <div slot="avatar">
@@ -21,9 +21,11 @@ export const Error = ({mensaje}) => {
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
       </div>
-      <div class="text-xl font-normal  max-w-full flex-initial">
-        {mensaje}
+      <div class="flex flex-col items-center justify-center">
+        <h3 className="text-xl font-normal  max-w-full flex-initial">{mensaje}</h3>
+        <p className="text-lg font-normal">{descripcion}</p>
       </div>
+
       <div class="flex flex-auto flex-row-reverse">
         <div>
           <svg

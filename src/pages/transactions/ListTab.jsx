@@ -9,7 +9,7 @@ import { IoAddCircleOutline } from "react-icons/io5";
 import { Sucess } from "../../component/alerts/Sucess";
 import { Error } from "../../component/alerts/Error";
 
-const ListTab = ({ pageSize }) => {
+const ListTab = ({ pageSize, transactions, handleSetTransaction, handleGetTransactions }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -18,7 +18,6 @@ const ListTab = ({ pageSize }) => {
   const [month, setMonth] = useState("");
   const [seller, setSeller] = useState("");
   const [payment, setPayment] = useState("");
-  const [transactions, setTransactions] = useState([]);
   const [currentOrder, setCurrentOrder] = useState(null);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [successModify, setSuccessModify] = useState(false);
@@ -96,47 +95,7 @@ const ListTab = ({ pageSize }) => {
     }, 2000);
   };
 
-  const getTransactions = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/api/transactions");
-      if (!response.ok) {
-        throw new Error("Error en la respuesta de la API");
-      }
-
-      const data = await response.json();
-      const orderByDate = await data.data.transaction.sort((a, b) => {
-        const dateA = new Date(a.createdAt);
-        const dateB = new Date(b.createdAt);
-        return dateB - dateA;
-      });
-
-      // Transformar las fechas aquí
-      const transactionsWithFormattedDate = data.data.transaction.map(
-        (transaction) => {
-          const date = transaction.createdAt;
-          const newDate = date.split(/[T-]/);
-          const year = newDate[0];
-          const month = newDate[1];
-          const day = newDate[2];
-          const dateFormatted = `${day}/${month}/${year}`;
-
-          // Devolver el objeto de transacción actualizado
-          return {
-            ...transaction,
-            year: year,
-            month: month,
-            day: day,
-            formattedDate: dateFormatted,
-          };
-        }
-      );
-
-      // Establecer las transacciones en el estado
-      setTransactions(transactionsWithFormattedDate);
-    } catch (error) {
-      console.error("Error al obtener las transacciones:", error);
-    }
-  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -181,7 +140,7 @@ const ListTab = ({ pageSize }) => {
     };
 
     handleAddTransaction(dailyTransaction);
-    setTransactions([dailyTransaction, ...transactions]);
+    handleSetTransaction([dailyTransaction, ...transactions]);
   };
   const handleModify = (id) => {
     setIsModifyModalOpen(true);
@@ -280,7 +239,7 @@ const ListTab = ({ pageSize }) => {
         </div>
 
         <TransactionTab
-          getTransactions={getTransactions}
+          getTransactions={handleGetTransactions}
           transactions={transactions}
           pageSize={pageSize}
           success={success}
