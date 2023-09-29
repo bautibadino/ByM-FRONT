@@ -65,7 +65,7 @@ const Transaction = () => {
             <ListTab transactions={transactions} handleSetTransaction={handleSetTransaction} pageSize={50} handleGetTransactions={handleGetTransactions}/>
           </section>
           <section className="w-full">
-            {/* <StatusGraph className="w-full" transactions={transactions}/> */}
+            <StatusGraph className="w-full" transactions={transactions}/>
             <PaymentTypeGraph className="w-full" transactions={transactions}/>
           </section>
         </div>

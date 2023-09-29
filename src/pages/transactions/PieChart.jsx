@@ -4,11 +4,10 @@ import { Pie } from 'react-chartjs-2'
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 export const PieChart = ({transactions, paidTransactions, pendingTransactions}) => {
-
-    
     const options = {
         responsive: true,
         maintainAspectRatio: false,
+        Animation: true
     }
     
     const data = {
@@ -24,9 +23,9 @@ export const PieChart = ({transactions, paidTransactions, pendingTransactions}) 
             }
         ]
     }
-
     return(
         <Pie 
+        id='pieChart'
         data={data}
         options={options}
         />

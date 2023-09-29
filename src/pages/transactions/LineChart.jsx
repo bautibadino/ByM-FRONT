@@ -1,18 +1,17 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { useEffect } from "react";
-import { Line } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const LineChart = ({ transactions }) => {
-  const transactionsByType = {};
-
+  const transactionsByType = {}; 
   let transaccionesCash = [];
   let transaccionesDebitCard = [];
   let transaccionesCreditCard = [];
   let transaccionesCheck = [];
   let transaccionesBankTransfer = [];
   let transaccionesOthers = [];
+console.log(transactions)
 
   transactions.forEach(transaccion => {
     switch (transaccion.paymentType) {
@@ -31,20 +30,27 @@ export const LineChart = ({ transactions }) => {
       case 'BANK_TRANSFER':
         transaccionesBankTransfer.push(transaccion);
         break;
-      case 'OTHERS':
+      case 'OTHER':
         transaccionesOthers.push(transaccion);
         break;
       // Puedes agregar más casos según tus tipos de pago
     }
   });
+  console.log('cash', transaccionesCash);
+  console.log('debit', transaccionesDebitCard);
+  console.log('credit', transaccionesCreditCard);
+  console.log('check', transaccionesCheck);
+  console.log('bank', transaccionesBankTransfer);
+  console.log('others', transaccionesOthers);
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    Animation: true
+
   };
 
   const data = {
-
     labels: [
       "Efectivo",
       "Tarjeta de credito",
@@ -55,15 +61,23 @@ export const LineChart = ({ transactions }) => {
     ],
     datasets: [
       {
-        label: "Tipo de pago",
-        data: [transaccionesCash, transaccionesCreditCard, transaccionesDebitCard, transaccionesCheck, transaccionesBankTransfer, transaccionesOthers],
-        backgroundColor: ["#00d91d", "#ff1303"],
-      },
+        label: "Transacciones",
+        data:[transaccionesCash.length, transaccionesCreditCard.length, transaccionesDebitCard.length, transaccionesCheck.length, transaccionesBankTransfer.length, transaccionesOthers.length],
+        backgroundColor: [
+          "#8400ff",
+          "#ff0048",
+          "#00ffc8",
+          "#b7ff00",
+          "#fd4r00",
+          "#ff0000",
+        ],
+      }
     ],
-  };
+  };  
 
   return (
-    <Line
+
+    <Pie
     data={data}
     options={options}/>
   );
