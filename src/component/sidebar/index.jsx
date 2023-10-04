@@ -9,8 +9,13 @@ import { useState } from "react";
 function Sidebar({ handleActive }) {
   const [activeDashboard, setActiveDashboard] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(false);
+  const [activeChequesDropdown, setActiveChequesDropdown] = useState(false);
+
   const handleActiveDropdown = () => {
     setActiveDropdown(!activeDropdown);
+  };
+  const handleChequesDropdown = () => {
+    setActiveChequesDropdown(!activeChequesDropdown);
   };
   return (
     <aside className="sidebar-wrapper fixed top-0 z-30 block h-full w-[308px] bg-white dark:bg-darkblack-600 sm:hidden xl:block">
@@ -118,6 +123,42 @@ function Sidebar({ handleActive }) {
                   </div>
                 )}
               </div>
+              <div className="dropdown">
+            <button onClick={handleChequesDropdown}>
+              <li className="item pt-5 text-bgray-900 dark:text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2.5">
+                    <span className="item-text text-lg font-medium leading-none">
+                      Cheques
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </button>
+            {activeChequesDropdown && (
+              <div>
+                <Link to="/cheques/nuevo-cheque">
+                  <div className="ml-3 mt-4 flex items-center justify-between">
+                    <div className="flex items-center space-x-2.5">
+                      <span className="item-text text-md font-light leading-none">
+                        Nuevo cheque
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+                <Link to="/cheques/consulta">
+                  <div className="ml-3 mt-4 flex items-center justify-between">
+                    <div className="flex items-center space-x-2.5">
+                      <span className="item-text text-md font-light leading-none">
+                        Buscar cheques
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            )}
+          </div>
+              
             </ul>
           </div>
         </div>

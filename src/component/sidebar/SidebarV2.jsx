@@ -41,7 +41,6 @@ function SidebarV2() {
                       <GrTransaction className="dark:text-white"/>
                       </span>
                     </Link>
-                    
                   </li>
                   
                 </ul>

@@ -21,6 +21,9 @@ import Transaction from "./pages/transactions/Transaction";
 import Services from "./pages/carServices/Services";
 import { CreateService } from "./pages/carServices/CreateService";
 import SearchService from "./pages/carServices/SearchService";
+import { Cheques } from "./pages/checks/Cheques";
+import { SearchCheque } from "./pages/checks/SearchCheque";
+import { CreateCheque } from "./pages/checks/CreateCheque";
 
 
 const router = createBrowserRouter([
@@ -40,10 +43,6 @@ const router = createBrowserRouter([
     path: "/transacciones",
     element: <Transaction/>,
   },
-  // {
-  //   path: "/services",
-  //   element: <Services/>,
-  // },
   {
     path: "/services/nuevo-service",
     element: 
@@ -58,7 +57,24 @@ const router = createBrowserRouter([
         <SearchService/>
       </Services>
   },
-
+  {
+    path: "/cheques",
+    element: <Cheques/>,
+  },
+  {
+    path: "/cheques/nuevo-cheque",
+    element: 
+      <Cheques>
+        <CreateCheque/>
+      </Cheques>
+  },
+  {
+    path: "/cheques/consulta",
+    element: 
+      <Cheques>
+        <SearchCheque/>
+      </Cheques>
+  },
   
 
 

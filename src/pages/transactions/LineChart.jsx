@@ -3,45 +3,15 @@ import { Pie } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export const LineChart = ({ transactions }) => {
-  const transactionsByType = {}; 
-  let transaccionesCash = [];
-  let transaccionesDebitCard = [];
-  let transaccionesCreditCard = [];
-  let transaccionesCheck = [];
-  let transaccionesBankTransfer = [];
-  let transaccionesOthers = [];
-console.log(transactions)
+export const LineChart = ({ 
+  transactions,
+  transaccionesCash,
+transaccionesDebitCard,
+transaccionesCreditCard,
+transaccionesCheck,
+transaccionesBankTransfer,
+transaccionesOthers,}) => {
 
-  transactions.forEach(transaccion => {
-    switch (transaccion.paymentType) {
-      case 'CASH':
-        transaccionesCash.push(transaccion);
-        break;
-      case 'DEBIT_CARD':
-        transaccionesDebitCard.push(transaccion);
-        break;
-      case 'CREDIT_CARD':
-        transaccionesCreditCard.push(transaccion);
-        break;
-      case 'CHECK':
-        transaccionesCheck.push(transaccion);
-        break;
-      case 'BANK_TRANSFER':
-        transaccionesBankTransfer.push(transaccion);
-        break;
-      case 'OTHER':
-        transaccionesOthers.push(transaccion);
-        break;
-      // Puedes agregar más casos según tus tipos de pago
-    }
-  });
-  console.log('cash', transaccionesCash);
-  console.log('debit', transaccionesDebitCard);
-  console.log('credit', transaccionesCreditCard);
-  console.log('check', transaccionesCheck);
-  console.log('bank', transaccionesBankTransfer);
-  console.log('others', transaccionesOthers);
 
   const options = {
     responsive: true,
