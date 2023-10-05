@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../component/layout";
 import { NavLink } from "react-router-dom";
 
@@ -7,10 +7,10 @@ export const Cheques = ({children}) => {
     
     const getCheckInfo = () =>{
         fetch('http://localhost:4000/api/checks')
-        .then(response => response.json())
-        .then(data => setCheques(data.data))
+        .then (response => response.json())
+        .then (data => setCheques(data.data))
     }
-    useState(()=>{
+    useEffect(()=>{
         getCheckInfo();
     }
     ,[])

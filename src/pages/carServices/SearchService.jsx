@@ -49,7 +49,6 @@ const SearchService = ({services}) => {
       );
     });
     setFilteredServices(filtered);
-    console.log(filtered);
   };
 
   useEffect(() => {
