@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BsArrowBarDown } from "react-icons/bs";
+import PaginationV2 from "../../component/Pagination/PaginationV2";
+import PaginationV1 from "../../component/Pagination/PaginationV1";
 
 const formatDate = (dateString) => {
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
@@ -10,17 +12,13 @@ const formatDate = (dateString) => {
   return formattedDate;
 };
 
-export const CheckTable = ({ cheques, searchTerm }) => {
+export const CheckTable = ({ cheques, searchTerm, filteredChecks, checkList }) => {
   const [expandedItems, setExpandedItems] = useState([]);
-  const [filteredChecks, setFilteredChecks] = useState([]);
 
-  
-  
   useEffect(() => {
     const newExpandedItems = cheques.map((check) => false);
     setExpandedItems(newExpandedItems);
-  }
-  , [cheques]);
+  }, [cheques]);
 
   const handleModalExpand = (index) => {
     const newExpandedItems = [...expandedItems];
@@ -28,20 +26,8 @@ export const CheckTable = ({ cheques, searchTerm }) => {
     setExpandedItems(newExpandedItems);
   };
 
-  const filterChecks = () => {
-    const filteredChecks = cheques.filter((check) => {
-      return (
-        check.chequeNumber &&  // Verificar si chequeNumber está definido
-        check.chequeNumber.includes(searchTerm)
-      );
-    });
-    setFilteredChecks(filteredChecks);
-  }
-  console.log(filteredChecks)
-  useEffect(() => {
-    filterChecks(searchTerm);
-  }
-  , [searchTerm]);
+  const renderChecks = filteredChecks.slice(0, 30); // Tomar solo los primeros 30 cheques
+
   return (
     <div className="flex flex-col mt-6">
       <div className="flex flex-row items-center justify-around w-full mb-6 dark:text-white">
@@ -59,11 +45,12 @@ export const CheckTable = ({ cheques, searchTerm }) => {
         </div>
       </div>
       <ul className="w-full">
-        {cheques?.map((cheque, index) => {
+        {renderChecks.map((cheque, index) => {
           return (
-            <li 
-            key={cheque._id}
-            className="flex flex-col justify-around w-full mb-6 dark:text-white">
+            <li
+              key={cheque._id}
+              className="flex flex-col justify-around w-full mb-6 dark:text-white"
+            >
               <div className="flex flex-row">
                 <div className="w-1/4 text-center font-bold text-lg">
                   <span>{cheque.chequeNumber}</span>

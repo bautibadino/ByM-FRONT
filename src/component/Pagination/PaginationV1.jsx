@@ -1,23 +1,32 @@
-import { useState } from "react";
-import {BsArrowDownShort} from "react-icons/bs";
-function PaginationV1() {
+import { useEffect, useState } from "react";
+import { BsArrowDownShort } from "react-icons/bs";
+
+function PaginationV1({ handleCurrentPage, currentPage, pagesLength }) {
   const [active, setActive] = useState(false);
 
-  const page = 3;
+  const handleOnClick = () => {
+    setActive(!active);
+  };
+
+  const handlePageClick = (page) => {
+    handleCurrentPage(page);
+    setActive(false); // Cierra la lista al hacer clic en una página
+  };
+  console.log(pagesLength)
   return (
     <div className="hidden items-center space-x-4 lg:flex">
       <span className="text-sm font-semibold text-bgray-600 dark:text-bgray-50">
-        Show result:
+        Página a ver:
       </span>
       <div className="relative">
         <button
           aria-label="none"
-          onClick={() => setActive(!active)}
+          onClick={handleOnClick}
           type="button"
-          className="flex items-center space-x-6 rounded-lg border border-bgray-300 px-2.5 py-[14px] dark:border-darkblack-400"
+          className="flex items-center space-x-6 rounded-lg bg-white border border-bgray-300 px-3 py-2 dark:border-darkblack-400"
         >
           <span className="text-sm font-semibold text-bgray-900 dark:text-bgray-50">
-            3
+            {currentPage}
           </span>
           <span>
             <BsArrowDownShort className="text-bgray-900 dark:text-bgray-50" />
@@ -30,13 +39,14 @@ function PaginationV1() {
           className="absolute right-0 top-14 z-10 hidden w-full overflow-hidden rounded-lg bg-white shadow-lg"
         >
           <ul>
-            {[...Array(page).keys(page)].map((item) => (
+            {pagesLength?.map((page) => (
               <li
-                key={item}
-                onClick={() => setActive(!active)}
-                className="text-bgray-90 cursor-pointer px-5 py-2 text-sm font-medium hover:bg-bgray-100"
+                value={page}
+                key={page}
+                onClick={() => handlePageClick(page)}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
               >
-                {item + 1}
+                {page}
               </li>
             ))}
           </ul>
