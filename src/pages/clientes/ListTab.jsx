@@ -201,7 +201,6 @@ const ListTab = ({ pageSize }) => {
                   />
                 </div>
               </div>
-              {/* Repite esto para los otros campos del formulario */}
               <div className="flex justify-end">
                 <button
                   className=" text-white bg-gradient-to-r from-red-300 to-red-500 rounded-lg px-4 py-2 hover:bg-blue-600"

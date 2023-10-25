@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SearchInput } from "./SearchInput";
 import { CheckTable } from "./CheckTable";
 import PaginationV1 from "../../component/Pagination/PaginationV1";
+import { list } from "postcss";
 
 export const SearchCheque = ({ cheques }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,30 +13,55 @@ export const SearchCheque = ({ cheques }) => {
   const [filteredChecks, setFilteredChecks] = useState([]);
   const [totalPages, setTotalPages] = useState();
   const [checkList, setCheckList] = useState([]);
-  const [maxChecks , setMaxChecks] = useState(30);
+  const [maxChecks, setMaxChecks] = useState(30);
+
+  const filterByDrawer = (check) => {
+    if(cheques){
+      const filtered = cheques.filter((check) => {
+        return check.drawer && check.drawer.includes(searchDrawer.toLocaleUpperCase());
+      });
+      setFilteredChecks(filtered);
+    }
+  };
+
+  const filterByDate = (check) => {
+    if(cheques){
+      const filtered = cheques.filter((check) => {
+        return check.expiredDate && check.expiredDate.includes(searchDate);
+      });
+      setFilteredChecks(filtered);
+    }
+  };
+
+  const filterByNumber = () => {
+    if (cheques) {
+      const filtered = cheques.filter((check) => {
+        console.log(check)
+        return check.chequeNumber && check.chequeNumber.includes(searchTerm);
+      });
+      setFilteredChecks(filtered);
+    }
+  };
+
+  const resetForm = () => {
+    setSearchTerm("");
+    setSearchDate("");
+    setSearchDrawer("");
+  }
+  
+  useEffect(() => {
+    filterByNumber();
+  }, [searchTerm]);
+  
+  useEffect(() => {
+    filterByDate();
+  }
+  , [searchDate]);
 
   useEffect(() => {
-    if (cheques) {
-      const ChecksFiltered = cheques.filter((check) => {
-        return (
-          check.chequeNumber && // Verificar si chequeNumber está definido
-          check.chequeNumber.includes(searchTerm) 
-          // check.date && // Verificar si date está definido
-          // check.date.includes(searchDate) &&
-          // check.drawer && // Verificar si drawer está definido
-          // check.drawer.includes(searchDrawer.toUpperCase)
-        );
-      });
-
-      setFilteredChecks(ChecksFiltered);
-      setTotalPages(Math.ceil(ChecksFiltered.length / Math.max(1, maxChecks)));
-      const pages = [];
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-      setPagesLength(pages);
-    }
-  }, [searchTerm, searchDate, searchDrawer, cheques]);
+    filterByDrawer();
+  }
+  , [searchDrawer]);
 
   function dividirArrayEnListas(array, elementosPorLista) {
     const listas = [];
@@ -47,6 +73,7 @@ export const SearchCheque = ({ cheques }) => {
   }
 
   const listasDeCheques = dividirArrayEnListas(filteredChecks, maxChecks);
+
 
   const handleSearchTerm = (term) => {
     if (!term) {
@@ -81,7 +108,7 @@ export const SearchCheque = ({ cheques }) => {
     } else {
       setCurrentPage(1);
     }
-    setSearchDrawer(drawer);
+    setSearchDrawer(drawer.toUpperCase());
   };
 
   const handleCurrentPage = (page) => {
@@ -92,14 +119,14 @@ export const SearchCheque = ({ cheques }) => {
     setMaxChecks(max);
   };
 
-  useEffect(() => {
-    setCheckList(listasDeCheques[currentPage - 1]);
-  }, [currentPage, filteredChecks]);
-  console.log("SearchTerm:", searchTerm);
-console.log("SearchDate:", searchDate);
-console.log("SearchDrawer:", searchDrawer);
-console.log("FilteredChecks:", filteredChecks);
-console.log("Cheques:", cheques);
+  const formatDate = (dateString) => {
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      undefined,
+      options
+    );
+    return formattedDate;
+  };
 
   return (
     <div className="flex flex-col px-4">
@@ -109,9 +136,30 @@ console.log("Cheques:", cheques);
         </h2>
       </div>
       <div className="w-full my-8">
-        <SearchInput handleSearchTerm={handleSearchTerm} inputType={'number'} placeholder="Número de Cheque" />
-        <SearchInput handleSearchTerm={handleSearchDate} inputType={'Date'} placeholder="Fecha" />
-        <SearchInput handleSearchTerm={handleSearchDrawer} inputType={'text'} placeholder="Propietario" />
+        <SearchInput
+          handleSearchTerm={handleSearchTerm}
+          inputType={"number"}
+          placeholder="Número de Cheque"
+          searchValue={searchTerm}
+        />
+        <SearchInput
+          handleSearchTerm={handleSearchDate}
+          inputType={"Date"}
+          placeholder="Fecha"
+          searchValue={searchDate}
+        />
+        <SearchInput
+          handleSearchTerm={handleSearchDrawer}
+          inputType={"text"}
+          placeholder="Propietario"
+          searchValue={searchDrawer}
+        />
+        <div className="w-full flex justify-center items-center ">
+          <button className="my-2 lg:w-3/4 bg-yellow-300 py-2 rounded-md"
+          onClick={resetForm}>
+            RESETEAR FILTROS
+          </button>
+        </div>
         {cheques && (
           <CheckTable
             totalPages={pagesLength.length}
@@ -119,6 +167,7 @@ console.log("Cheques:", cheques);
             filteredChecks={filteredChecks}
             cheques={cheques}
             searchTerm={searchTerm}
+            formatDate={formatDate}
           />
         )}
       </div>
