@@ -2,6 +2,7 @@ import ProtoTypes from "prop-types";
 
 import { useEffect, useState } from "react";
 import PersonalInfoFrom from "./PersonalInfoFrom";
+import { BsUiChecksGrid } from "react-icons/bs";
 
 function PersonalInfo({ name, activeTab }) {
   const [user, setUser] = useState({});
@@ -16,7 +17,7 @@ function PersonalInfo({ name, activeTab }) {
     const info = await res.json();
     setUser(info.data.client);
   };
-  
+  console.log(user)
   useEffect(() => {
     findUser();
   }, []);

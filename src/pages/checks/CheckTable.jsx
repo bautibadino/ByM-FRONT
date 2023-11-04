@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BsArrowBarDown } from "react-icons/bs";
 import PaginationV2 from "../../component/Pagination/PaginationV2";
 import PaginationV1 from "../../component/Pagination/PaginationV1";
+import exp from "constants";
 
 export const CheckTable = ({
   cheques,
@@ -11,30 +12,41 @@ export const CheckTable = ({
   formatDate,
 }) => {
   const [expandedItems, setExpandedItems] = useState([]);
+  const [checkData, setCheckData] = useState({});
+  const renderChecks = filteredChecks.slice(0, 30); // Tomar solo los primeros 30 cheques
+
+  const handleModalExpand = (index) => {
+    const newExpandedItems = expandedItems.map((item, i) => i === index ? !item : false);
+    setExpandedItems(newExpandedItems);
+    console.log()
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCheckData({
+      ...checkData,
+      [name]: value,
+    });
+  };
 
   useEffect(() => {
     const newExpandedItems = cheques.map((check) => false);
     setExpandedItems(newExpandedItems);
   }, [cheques]);
 
+  // useEffect(() => {
+  //   setCheckData(cheque);
+  // }, []);
+
+
   // Ordenar los cheques por fecha de vencimiento
   filteredChecks.sort(
     (a, b) => new Date(b.expiredDate) - new Date(a.expiredDate)
   );
-
-  const handleModalExpand = (index) => {
-    const newExpandedItems = [...expandedItems];
-    newExpandedItems[index] = !newExpandedItems[index];
-    setExpandedItems(newExpandedItems);
-  };
-
-  const renderChecks = filteredChecks.slice(0, 30); // Tomar solo los primeros 30 cheques
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
-  
   return (
     <div className="flex flex-col mt-6">
       <div className="flex flex-row items-center justify-around w-full mb-6 dark:text-white">
@@ -54,7 +66,6 @@ export const CheckTable = ({
       <form className="" onSubmit={(e) => handleSubmit(e)}>
         <ul className="w-full">
           {renderChecks.map((cheque, index) => {
-
             return (
               <li
                 key={cheque._id}
@@ -104,15 +115,13 @@ export const CheckTable = ({
                           className="border-none rounded-md text-black"
                           value={cheque.status}
                         >
-                          <option value="PENDING">PENDIENTE</option>
+                          <option value="PENDING">EN CARTERA</option>
                           <option value="DELIVERED">ENTREGADO</option>
                           <option value="COLLECTED">COBRADO</option>
                           <option value="DEPOSITED">DEPOSITADO</option>
                         </select>
                       </div>
                     </div>
-
-
 
                     <div className="flex flex-row w-full justify-center my-832r">
                       <div className="flex flex-col items-center justify-center mx-2 ">
@@ -135,10 +144,11 @@ export const CheckTable = ({
 
                       <div className="flex flex-col items-center justify-center mx-2 ">
                         <label htmlFor="">Sucursal banco</label>
-                        <input type="text" className="border-none rounded-md text-black" value={cheque.bankPlace}
-                        
+                        <input
+                          type="text"
+                          className="border-none rounded-md text-black"
+                          value={cheque.bankPlace}
                         />
-                        
                       </div>
                     </div>
                   </div>

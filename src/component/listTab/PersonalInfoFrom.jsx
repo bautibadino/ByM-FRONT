@@ -40,11 +40,9 @@ const PersonalInfoFrom = ({ user }) => {
         console.log("Error:", error);
       });
   };
-  
+
   return (
-
     <div className="2xl:col-span-8 xl:col-span-7">
-
       <h2 className="dark:text-white text-3xl mb-2">PERFIL DE USUARIO</h2>
       <h3 className="text-2xl font-bold pb-5 text-bgray-900 dark:text-yellow-400 dark:border-darkblack-400 border-b border-bgray-200">
         {name}
@@ -159,13 +157,13 @@ const PersonalInfoFrom = ({ user }) => {
         </form>
       </div>
       {success && (
-      <div className="fixed top-0 left-0 w-full h-full bg-[#000000b3] flex justify-center items-center z-50">
-        <Sucess
-        mensaje={`Cliente ${user.name}`}
-        descripcion={`Actualizado con éxito`}
-        />
-      </div>
-     )}
+        <div className="fixed top-0 left-0 w-full h-full bg-[#000000b3] flex justify-center items-center z-50">
+          <Sucess
+            mensaje={`Cliente ${user.name}`}
+            descripcion={`Actualizado con éxito`}
+          />
+        </div>
+      )}
     </div>
   );
 };

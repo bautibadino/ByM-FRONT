@@ -6,6 +6,7 @@ const ClientInfo = ({ id, img, name, email, location, cuit, fetchData, handleDel
   const [optionsActive, setOptionsActive] = useState(false);
   const [sucess , setSucess] = useState(false);
   const [error , setError] = useState(false);
+
   const handleModify = (e) => {
 
   };
