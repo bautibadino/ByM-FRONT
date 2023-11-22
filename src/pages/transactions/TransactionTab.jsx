@@ -3,59 +3,58 @@ import { BsArrowDownUp } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import TransactionInfo from "./TransactionInfo";
 
-
-const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month, payment, handleModify, successModify}) => {
+const TransactionTab = ({
+  bdSeller,
+  getTransactions,
+  transactions,
+  seller,
+  month,
+  payment,
+  handleModify,
+  successModify,
+}) => {
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [monthNumber, setMonthNumber] = useState(0);
   const [success, setSuccess] = useState(false);
   const pageSize = 100;
   const numberMonths = {
-    "Enero": "01",
-    "Febrero": "02",
-    "Marzo": "03",
-    "Abril": "04",
-    "Mayo": "05",
-    "Junio": "06",
-    "Julio": "07",
-    "Agosto": "08",
-    "Septiembre": "09",
-    "Octubre": "10",
-    "Noviembre": "11",
-    "Diciembre": "12"
-  }
+    Enero: "01",
+    Febrero: "02",
+    Marzo: "03",
+    Abril: "04",
+    Mayo: "05",
+    Junio: "06",
+    Julio: "07",
+    Agosto: "08",
+    Septiembre: "09",
+    Octubre: "10",
+    Noviembre: "11",
+    Diciembre: "12",
+  };
   const paymentType = {
-    "Efectivo": "CASH",
+    Efectivo: "CASH",
     "Tarjeta de crédito": "CREDIT_CARD",
     "Tarjeta de débito": "DEBIT_CARD",
-    "Cheque": "CHECK",
-    "Transferencia": "TRANSFER",
-    "Otro": "OTHER"
-  }
+    Cheque: "CHECK",
+    Transferencia: "TRANSFER",
+    Otro: "OTHER",
+  };
 
-
-  useEffect(() => {
-    getTransactions();
-  }
-  , []);
-
-  useEffect(() => {
-    filterTransactions();
-    // orderTransactions();
-  }, [seller, month, payment, transactions]);
-
-  useEffect(() => {
-    orderTransactions();
-  }, []);
   const filterTransactions = () => {
     const filtered = transactions.filter((transaction) => {
-      const sellerMatch = seller === "" || transaction.seller === bdSeller.find((vendedor) => vendedor.firstName === seller)._id;
-      const paymentMatch = payment === "" || transaction.paymentType === paymentType[payment];
-      const monthMatch = month === "" || transaction.month === numberMonths[month];
+      const sellerMatch =
+        seller === "" ||
+        transaction.seller ===
+          bdSeller.find((vendedor) => vendedor.firstName === seller)._id;
+      const paymentMatch =
+        payment === "" || transaction.paymentType === paymentType[payment];
+      const monthMatch =
+        month === "" || transaction.month === numberMonths[month];
       return sellerMatch && paymentMatch && monthMatch;
     });
     setFilteredTransactions(filtered);
   };
-  
+
   const orderTransactions = () => {
     const ordered = [...filteredTransactions]; // Clonar el arreglo para no modificarlo directamente
     ordered.sort((a, b) => {
@@ -73,7 +72,9 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
           "Content-Type": "application/json",
         },
       });
-      setFilteredTransactions(filteredTransactions.filter((t) => t._id !== transaction));
+      setFilteredTransactions(
+        filteredTransactions.filter((t) => t._id !== transaction)
+      );
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);
@@ -81,12 +82,25 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
     };
   };
 
+  useEffect(() => {
+    getTransactions();
+  }, []);
+
+  useEffect(() => {
+    filterTransactions();
+    // orderTransactions();
+  }, [seller, month, payment, transactions]);
+
+  useEffect(() => {
+    orderTransactions();
+  }, []);
+
   return (
     <div className="table-content w-full overflow-x-auto">
       <table className="w-full">
         <thead>
           <tr className="w-full border-b border-bgray-300 dark:border-darkblack-400">
-          <th className="tw-1/7 px-6 py-5 lg:w-auto xl:px-0">
+            <th className="tw-1/7 px-6 py-5 lg:w-auto xl:px-0">
               <div className="flex w-full justify-center items-center space-x-2.5 text-center">
                 <span className="w-full text-left text-base font-medium text-bgray-600 dark:text-bgray-50">
                   Fecha
@@ -100,7 +114,7 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
                 </span>
               </div>
             </th>
-            <th className="w-1/7 px-6 py-5 xl:px-0 whitespace-nowrap" >
+            <th className="w-1/7 px-6 py-5 xl:px-0 whitespace-nowrap">
               <div className="flex w-full items-center space-x-2.5 text-center">
                 <span className="w-full font-medium text-bgray-600 dark:text-bgray-50">
                   Medio de pago
@@ -135,39 +149,37 @@ const TransactionTab = ({bdSeller, getTransactions, transactions, seller, month,
                 </span>
               </div>
             </th>
-            <th className="px-6 py-5 xl:px-0">
-              
-            </th>
+            <th className="px-6 py-5 xl:px-0"></th>
           </tr>
         </thead>
         <tbody>
-        {filteredTransactions?.map((transaction, index) =>
-              pageSize ? (
-                index + 1 <= pageSize && (
+          {filteredTransactions?.map((transaction, index) =>
+            pageSize
+              ? index + 1 <= pageSize && (
                   <TransactionInfo
-                  successModify={successModify}
-                  key={transaction._id}
-                  transaction={transaction}
-                  bdSeller={bdSeller}
-                  filteredTransactions={filteredTransactions}
-                  handleDeleteTransaction={handleDeleteTransaction}
-                  success={success}
-                  handleModify={handleModify}
+                    successModify={successModify}
+                    key={transaction._id}
+                    transaction={transaction}
+                    bdSeller={bdSeller}
+                    filteredTransactions={filteredTransactions}
+                    handleDeleteTransaction={handleDeleteTransaction}
+                    success={success}
+                    handleModify={handleModify}
                   />
                 )
-              ) : index < 3 && (
-                <TransactionInfo
-                  successModify={successModify}
-                  key={transaction._id}
-                  transaction={transaction}
-                  bdSeller={bdSeller}
-                  filteredTransactions={filteredTransactions}
-                  handleDeleteTransaction={handleDeleteTransaction}
-                  success={success}
-                  handleModify={handleModify}
-                />
-              )
-            )}
+              : index < 3 && (
+                  <TransactionInfo
+                    successModify={successModify}
+                    key={transaction._id}
+                    transaction={transaction}
+                    bdSeller={bdSeller}
+                    filteredTransactions={filteredTransactions}
+                    handleDeleteTransaction={handleDeleteTransaction}
+                    success={success}
+                    handleModify={handleModify}
+                  />
+                )
+          )}
         </tbody>
       </table>
     </div>

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsCheckLg } from "react-icons/bs";
 
 export const CheckForm = ({handleSubmit, error, success}) => {
-const [cheque, setCheque] = useState({
+  const [cheque, setCheque] = useState({
     chequeNumber: "",
     expiredDate: "",
     drawer: "",
@@ -11,21 +11,24 @@ const [cheque, setCheque] = useState({
     deliveredBy: "",
     employee: "",
     amount: "",
+    deliveredTo: "",
+    cuit: "",
     status: "",
   });
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name,value)
     setCheque((prevCheque) => ({
       ...prevCheque,
       [name]: value,
     }));
   };
-
-
+  
   const onSubmit = (e) => {
     e.preventDefault();
-    handleSubmit(e,cheque);
+    
+    handleSubmit(e, cheque);
     setCheque({
       chequeNumber: "",
       expiredDate: "",
@@ -34,10 +37,14 @@ const [cheque, setCheque] = useState({
       bankPlace: "",
       deliveredBy: "",
       employee: "",
+      cuit: "",
+      deliveredTo: "",
       amount: "",
-      status: "PENDING",
+      status: "",
     });
+
   };
+
 
 
   return (
@@ -47,75 +54,132 @@ const [cheque, setCheque] = useState({
       >
         <div className="flex flex-row w-full mb-3 ">
           <div className="mx-2 flex flex-col">
-            <label className="dark:text-white">Numero:</label>
+            <label 
+            htmlFor="chequeNumber"
+            className="dark:text-white">Numero:</label>
             <input
+            id="chequeNumber"
             onChange={handleInputChange}
+            onFocus={handleInputChange}
+            value={cheque.chequeNumber}
             name="chequeNumber"
             type="text" 
             className="border-none rounded-md" />
           </div>
           <div className="mx-2 flex flex-col">
-            <label className="dark:text-white">Fecha de vencimiento:</label>
+            <label 
+            htmlFor="expiredDate"
+            className="dark:text-white">Fecha de vencimiento:</label>
             <input 
+            id="expiredDate"
             onChange={handleInputChange}
+            onFocus={handleInputChange}
+            value={cheque.expiredDate}
             name="expiredDate"
-            type="text" 
+            type="date" 
             className="border-none rounded-md" />
           </div>
         </div>
         <div className="flex flex-col mx-2">
-          <label className="dark:text-white">Librador:</label>
+          <label 
+          htmlFor="drawer"
+          className="dark:text-white">Librador:</label>
           <input
+          id="drawer"
           onChange={handleInputChange}
+          onFocus={handleInputChange}
+          value={cheque.drawer}
           name="drawer"
           type="text" className="border-none rounded-md"/>
         </div>
         <div className="flex flex-row">
         <div className="flex flex-col mx-2">
-          <label className="dark:text-white">Banco:</label>
+          <label 
+          htmlFor="bank"
+          className="dark:text-white">Banco:</label>
           <input
+          id="bank"
           onChange={handleInputChange} 
+          onFocus={handleInputChange}
+          value={cheque.bank}
           name="bank"
           type="text" className="border-none rounded-md" />
         </div>
         <div className="flex flex-col mx-2">
-          <label className="dark:text-white">Plaza:</label>
+          <label 
+          htmlFor="bankPlace"
+          className="dark:text-white">Plaza:</label>
           <input 
+          id="bankPlace"
           onChange={handleInputChange}
+          onFocus={handleInputChange}
+          value={cheque.bankPlace}
           name="bankPlace"
           type="text" className="border-none rounded-md"/>
         </div>
-        </div>
         
+        </div>
         <div className="flex flex-col mx-2">
-          <label className="dark:text-white">Entregado por:</label>
+          <label 
+          htmlFor="cuit"
+          className="dark:text-white">Cuit:</label>
+          <input 
+          id="cuit"
+          onChange={handleInputChange}
+          onFocus={handleInputChange}
+          value={cheque.cuit}
+          name="cuit"
+          type="text" className="border-none rounded-md"/>
+        </div>
+        <div className="flex flex-col mx-2">
+          <label 
+          htmlFor="deliveredBy"
+          className="dark:text-white">Entregado por:</label>
           <input
+          id="deliveredBy"
           onChange={handleInputChange} 
+          onFocus={handleInputChange}
+          value={cheque.deliveredBy}
           name="deliveredBy"
           type="text" className="border-none rounded-md"/>
         </div>
         <div className="flex flex-col mx-2">
-          <label className="dark:text-white">Cargado por:</label>
+          <label 
+          htmlFor="employee"
+          className="dark:text-white">Cargado por:</label>
           <input
+          id="employee"
           onChange={handleInputChange} 
+          onFocus={handleInputChange}
+          value={cheque.employee}
           name="employee"
           ype="text" className="border-none rounded-md"/>
         </div>
         <div className="flex flex-row">
         <div className="flex flex-col mx-2">
-          <label className=" dark:text-white ">Monto:</label>
+          <label 
+          htmlFor="amount"
+          className=" dark:text-white ">Monto:</label>
           <div className="flex flex-row items-center">
             <span className="mr-2 dark:text-white">$</span>
             <input
-            onChange={handleInputChange} 
+            id="amount"
+            onChange={handleInputChange}
+            onFocus={handleInputChange} 
+            value={cheque.amount}
             name="amount"
             type="number" className="border-none rounded-md w-full"/>
           </div>
         </div>
         <div className="flex flex-col mx-2 w-1/2">
-          <label className="dark:text-white">Estado:</label>
+          <label 
+          htmlFor="status"
+          className="dark:text-white">Estado:</label>
           <select 
+          id="status"
           onChange={handleInputChange}
+          onFocus={handleInputChange}
+          value={cheque.status}
           name="status"
           className="border-none rounded-md">
             <option value="PENDING">EN CARTERA</option>
@@ -127,7 +191,7 @@ const [cheque, setCheque] = useState({
         </div>
         <button
         type="submit"
-        className="rounded-md px-3 py-2 bg-green-400 mt-10">
+        className="rounded-md px-3 py-2 bg-green-400 mt-10  ">
           Enviar
         </button>
         {

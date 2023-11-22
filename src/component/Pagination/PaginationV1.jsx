@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BsArrowDownShort } from "react-icons/bs";
 
-function PaginationV1({ handleCurrentPage, currentPage, pagesLength }) {
+function PaginationV1({ handleCurrentPage, currentPage, totalPages }) {
   const [active, setActive] = useState(false);
 
   const handleOnClick = () => {
@@ -12,7 +12,7 @@ function PaginationV1({ handleCurrentPage, currentPage, pagesLength }) {
     handleCurrentPage(page);
     setActive(false); // Cierra la lista al hacer clic en una página
   };
-  console.log(pagesLength)
+  console.log(currentPage)
   return (
     <div className="hidden items-center space-x-4 lg:flex">
       <span className="text-sm font-semibold text-bgray-600 dark:text-bgray-50">
@@ -39,13 +39,13 @@ function PaginationV1({ handleCurrentPage, currentPage, pagesLength }) {
           className="absolute right-0 top-14 z-10 hidden w-full overflow-hidden rounded-lg bg-white shadow-lg"
         >
           <ul>
-            {pagesLength?.map((page) => (
+            {totalPages?.map((page) => (
               <li
                 value={page}
                 key={page}
                 onClick={() => handlePageClick(page)}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-              >
+              > 
                 {page}
               </li>
             ))}

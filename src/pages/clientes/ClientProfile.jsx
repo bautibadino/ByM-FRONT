@@ -1,6 +1,6 @@
 import React from "react";
-import Layout from "../layout";
-import PersonalInfo from "./PersonalInfo";
+import PersonalInfo from "../../component/settings/PersonalInfo";
+import Layout from "../../component/layout";
 
 
 export const ClientProfile = () => {

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import PersonalInfoFrom from "./PersonalInfoFrom";
 import { BsUiChecksGrid } from "react-icons/bs";
 
-function PersonalInfo({ name, activeTab }) {
+export const PersonalInfo = ({ name, activeTab }) => { 
   const [user, setUser] = useState({});
   const [updatedUser, setUpdatedUser] = useState({});
   
@@ -61,10 +61,4 @@ function PersonalInfo({ name, activeTab }) {
     </div>
   );
 }
-
-PersonalInfo.propTypes = {
-  name: ProtoTypes.string,
-  activeTab: ProtoTypes.string,
-};
-
-export default PersonalInfo;
+  

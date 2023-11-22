@@ -8,6 +8,7 @@ export const CreateCheque = () => {
 
   const handleSubmit = async (e, cheque) => {
     e.preventDefault();
+    console.log(cheque)
     if (cheque) {
       // Verifica que todas las propiedades del objeto 'cheque' estén completas
       const requiredProperties = [

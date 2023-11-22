@@ -16,7 +16,7 @@ import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
 import ComingSoon from "./pages/commingSoon";
 import Error from "./pages/error";
-import { ClientProfile } from "./component/listTab/clientProfile";
+import { ClientProfile } from "./pages/clientes/ClientProfile";
 import Transaction from "./pages/transactions/Transaction";
 import Services from "./pages/carServices/Services";
 import { CreateService } from "./pages/carServices/CreateService";
@@ -24,6 +24,7 @@ import SearchService from "./pages/carServices/SearchService";
 import { Cheques } from "./pages/checks/Cheques";
 import { SearchCheque } from "./pages/checks/SearchCheque";
 import { CreateCheque } from "./pages/checks/CreateCheque";
+import { Products } from "./pages/products/Products";
 
 
 const router = createBrowserRouter([
@@ -75,7 +76,12 @@ const router = createBrowserRouter([
         <SearchCheque/>
       </Cheques>
   },
-  
+  {
+    path: "/productos",
+    element: <Products/>,
+  },
+
+
 
 
   {

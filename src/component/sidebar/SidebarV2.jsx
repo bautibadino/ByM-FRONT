@@ -31,14 +31,14 @@ function SidebarV2() {
                   <li className="item px-[43px] py-[11px]">
                     <Link to="/clientes">
                       <button className="dark:text-white">
-                      <BsFillPeopleFill className=""/>
+                      <BsFillPeopleFill className="text-darkblack-600 dark:text-white hover:text-yellow-400 text-xl hover:scale-105"/>
                       </button>
                     </Link>
                   </li>
                   <li className="item px-[43px] py-[11px] dark:text-white">
                     <Link to="/transacciones">
                       <span className="">
-                      <GrTransaction className="dark:text-white"/>
+                      <GrTransaction className="text-darkblack-600 dark:text-white hover:text-yellow-400 text-xl hover:scale-105"/>
                       </span>
                     </Link>
                   </li>

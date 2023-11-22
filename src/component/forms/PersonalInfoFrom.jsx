@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { Sucess } from "../alerts/Sucess";
 
 const  PersonalInfoFrom = ({ user }) => {
   const [formData, setFormData] = useState({})
   const { name, cuit, email, phone, location, address } = user;
-  
+  const [sucess, setSucess] = useState(false);
+  const [formChange, setFormChange] = useState(false);
   useEffect(() => {
     setFormData(user)
   }, [user])
@@ -14,10 +16,12 @@ const  PersonalInfoFrom = ({ user }) => {
       ...formData,
       [name]: value,
     });
+    setFormChange(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    formChange &&
     fetch(`http://localhost:4000/api/clients/${user._id}`, {
       method: "PUT",
       headers: {
@@ -27,7 +31,12 @@ const  PersonalInfoFrom = ({ user }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Cliente actualizado con éxito", data);
+        setSucess(true);
+
+        setTimeout(() => {
+          setSucess(false)
+          setFormChange(false)
+        }, 2000);
       }
       )
   }
@@ -150,6 +159,9 @@ const  PersonalInfoFrom = ({ user }) => {
               Save Profile
             </button>
           </div>
+            {
+            sucess && <Sucess mensaje={"Perfil actualizado correctamente"} />
+            }
         </form>
       </div>
     </div>

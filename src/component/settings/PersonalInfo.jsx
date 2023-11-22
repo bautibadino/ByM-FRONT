@@ -1,10 +1,9 @@
-import ProtoTypes from "prop-types";
 import PersonalInfoFrom from "../forms/PersonalInfoFrom";
 import profileImg from "../../assets/images/avatar/profile.png";
 import coverImg from "../../assets/images/others/cover.jpg";
 import { useEffect, useState } from "react";
 
-function PersonalInfo({ name, activeTab }) {
+const PersonalInfo = ({ name, activeTab }) => {
   const [user, setUser] = useState({});
   const [updatedUser, setUpdatedUser] = useState({});
 
@@ -60,11 +59,6 @@ function PersonalInfo({ name, activeTab }) {
       </div>
     </div>
   );
-}
-
-PersonalInfo.propTypes = {
-  name: ProtoTypes.string,
-  activeTab: ProtoTypes.string,
-};
+  };
 
 export default PersonalInfo;

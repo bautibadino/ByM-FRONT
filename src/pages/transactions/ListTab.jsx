@@ -12,7 +12,10 @@ import { Error } from "../../component/alerts/Error";
 const ListTab = ({ pageSize, transactions, handleSetTransaction, handleGetTransactions }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({
+    status: false,
+    message: "",
+  });
   const [bdSeller, setBdSeller] = useState([]); //BD
   const [formSeller, setFormSeller] = useState(null);
   const [month, setMonth] = useState("");
@@ -106,7 +109,7 @@ const ListTab = ({ pageSize, transactions, handleSetTransaction, handleGetTransa
     const status = e.target.status.value;
     const description = e.target.description.value;
     const total = e.target.total.value;
-
+  
     if (
       client === "" ||
       seller === null ||
@@ -115,20 +118,25 @@ const ListTab = ({ pageSize, transactions, handleSetTransaction, handleGetTransa
       description === "" ||
       total === ""
     ) {
-      setError(true);
+      setError({
+        status: true,
+        message: "Compruebe los datos ingresados",
+      });
       setTimeout(() => {
-        setError(false);
+        setError({
+          status: false,
+          message: "",
+        });
       }, 2000);
       return;
     }
-
+  
     const date = new Date(); // Obtenemos la fecha actual
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const day = date.getDate().toString().padStart(2, "0");
     const dateFormatted = `${day}/${month}/${year}`;
-
-    console.log(dateFormatted);
+  
     const dailyTransaction = {
       client,
       seller,
@@ -138,10 +146,28 @@ const ListTab = ({ pageSize, transactions, handleSetTransaction, handleGetTransa
       total,
       formattedDate: dateFormatted,
     };
-
+    if (dailyTransaction.status === "DEBITED") {
+      dailyTransaction.paymentType = "OTHER";
+    } else if (dailyTransaction.status === "PAID") {
+      if (dailyTransaction.paymentType === "OTHER") {
+        setError({
+          status: true,
+          message: `Si está pagado, no puede ser "Otro" el medio de pago`,
+        });
+        setTimeout(() => {
+          setError({
+            status: false,
+            message: "",
+          });
+        }, 2000);
+        return;
+      }
+    }
+  
     handleAddTransaction(dailyTransaction);
     handleSetTransaction([dailyTransaction, ...transactions]);
   };
+  
   const handleModify = (id) => {
     setIsModifyModalOpen(true);
     const order = transactions.find((transaction) => transaction._id === id);
@@ -387,22 +413,23 @@ const ListTab = ({ pageSize, transactions, handleSetTransaction, handleGetTransa
               </div>
 
               <div className="flex justify-end">
+              <button
+                  type="submit"
+                  className="bg-gradient-to-l from-green-300 to-green-500 text-white rounded-lg px-4 py-2 mr-2 hover:bg-green-600"
+                >
+                  Guardar
+                </button>
                 <button
                   className=" text-white bg-gradient-to-r from-red-300 to-red-500 rounded-lg px-4 py-2 hover:bg-blue-600"
                   onClick={closeModal}
                 >
                   Cancelar
                 </button>
-                <button
-                  type="submit"
-                  className="bg-gradient-to-l from-green-300 to-green-500 text-white rounded-lg px-4 py-2 ml-2 hover:bg-green-600"
-                >
-                  Guardar
-                </button>
+               
               </div>
 
               {success && <Sucess mensaje="Transaccion creada con éxito" />}
-              {error && <Error mensaje="Compruebe los datos ingresados" />}
+              {error.status && <Error mensaje={error.message}/>}
             </form>
           </div>
         </div>
@@ -564,23 +591,24 @@ const ListTab = ({ pageSize, transactions, handleSetTransaction, handleGetTransa
               {/* Repite esto para los otros campos del formulario */}
               <div className="flex justify-end">
                 <button
-                  className=" text-white bg-gradient-to-r from-red-300 to-red-500 rounded-lg px-4 py-2 hover:bg-blue-600"
-                  onClick={(e) => setIsModifyModalOpen(false)}
-                >
-                  Cancelar
-                </button>
-                <button
                   type="submit"
                   className="bg-gradient-to-l from-green-300 to-green-500 text-white rounded-lg px-4 py-2 ml-2 hover:bg-green-600"
                 >
                   Guardar
                 </button>
+                <button
+                  className=" text-white bg-gradient-to-r from-red-300 to-red-500 rounded-lg px-4 py-2 hover:bg-blue-600"
+                  onClick={(e) => setIsModifyModalOpen(false)}
+                >
+                  Cancelar
+                </button>
+                
               </div>
 
               {successModify && (
                 <Sucess mensaje="Transaccion modificada con éxito" />
               )}
-              {error && <Error mensaje="Compruebe los datos ingresados" />}
+              {error.status && <Error mensaje={error.message} />}
             </form>
           </div>
         </div>

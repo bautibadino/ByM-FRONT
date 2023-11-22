@@ -10,6 +10,7 @@ const PaymentSelector = ({onPaymentChange, payment}) =>{
     'Tarjeta de débito',
     'Cheque',
     'Transferencia',
+    'Otro'
   ];
 
   const newPayment = (payment) => {

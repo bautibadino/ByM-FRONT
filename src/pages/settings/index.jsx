@@ -7,7 +7,7 @@ import Faq from "../../component/settings/Faq";
 import Payment from "../../component/settings/Payment";
 import ProgramAndResources from "../../component/settings/ProgramAndResources";
 import Notification from "../../component/settings/Notification";
-import PersonalInfo from "../../component/settings/PersonalInfo";
+// import { PersonalInfo } from "../../component/settings/PersonalInfo";
 
 function Settings() {
   const [activeTab, setActiveTab] = useState("personalInfo");
@@ -24,7 +24,7 @@ function Settings() {
           {/* Tab Content  */}
           <div className="py-8 px-10 col-span-9 tab-content">
             {/* Personal Information */}
-            <PersonalInfo name="personalInfo" activeTab={activeTab} />
+            {/* <PersonalInfo name="personalInfo" activeTab={activeTab} /> */}
             {/* Notification  */}
             <Notification name="notification" activeTab={activeTab} />
             {/* Program & Resources  */}
